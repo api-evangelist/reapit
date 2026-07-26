@@ -1,0 +1,338 @@
+aid: reapit
+url: https://raw.githubusercontent.com/api-evangelist/reapit/refs/heads/main/apis.yml
+name: Reapit
+kind: company
+description: >-
+  Reapit is a United Kingdom-headquartered supplier of agency CRM and property
+  management software for estate and letting agents, best known for AgencyCloud
+  and Property Cloud, and operating across the UK and Ireland, Australia and New
+  Zealand, and Denmark (through Mindworking). In a market with no MLS, Reapit
+  sits in the middle of the value chain: listings are created and maintained in
+  the agent's CRM and pushed outward to the two dominant consumer portals,
+  Rightmove and Zoopla, so the CRM — not any cooperative database — is where the
+  machine-readable property record actually lives. Its API posture is unusually
+  open for this sector and is the counter-example to "certified but unreachable":
+  Reapit Foundations is a genuine developer platform with a public documentation
+  site at foundations-documentation.reapit.cloud, a self-serve registration form
+  at developers.reapit.cloud/register behind published Developer Terms and
+  Conditions, an immediately usable SBOX sandbox, OpenID Connect authentication
+  through Reapit Connect with a live anonymous discovery document, a REST API
+  covering roughly thirty CRM resource domains, a public GraphQL proxy, a real
+  webhooks system with sixty-plus event topics, and an alpha Model Context
+  Protocol server. The honest caveat is the contract: the Swagger/OpenAPI
+  document that powers the Interactive API Explorer is served from
+  platform.reapit.cloud/docs and requires a bearer token, so no machine-readable
+  spec could be harvested anonymously, and reaching any real agency's data
+  requires the app to pass Reapit's AppMarket listing review and then be
+  installed by that customer, who grants the scopes. There is no RESO Web API or
+  Data Dictionary certification, no OData $metadata document and no Universal
+  Property Identifier anywhere in Reapit's stack — RESO is a North American,
+  NAR-driven construct and the UK has no MLS to certify against. Reapit publishes
+  no open data; the open UK property layer belongs to HM Land Registry and
+  Ordnance Survey, not to the CRM vendors.
+accessModel:
+  pricing: paid
+  onboarding: self-serve
+  trial: true
+  try_now: true
+  public: false
+  label: Paid consumption · Self-serve developer registration · SBOX sandbox ·
+    production data requires AppMarket review and customer install
+  confidence: high
+  source:
+  - documentation
+  - authentication
+  - developer-terms-and-conditions
+  generated: '2026-07-26'
+  method: manual
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/groq.png
+tags:
+- Real Estate
+- United Kingdom
+- PropTech
+- CRM
+- Estate Agents
+- Property Listings
+- Property Management
+- Rentals
+- Conveyancing
+- Australia
+created: '2026-07-26'
+modified: '2026-07-26'
+specificationVersion: '0.19'
+apis:
+- aid: reapit:reapit-foundations-platform-rest-api
+  name: Reapit Foundations Platform REST API
+  description: >-
+    The core Foundations REST API over the Reapit agency CRM data platform. It is
+    documented as a hypermedia REST API with date-based versioning (the
+    `api-version: 2020-01-31` header is required), optimistic concurrency via
+    ETag/If-Match, embedded and linked resources, pre-signed URL file upload, and
+    a metadata service for custom entities and custom fields. Resource domains
+    named in the platform permissions glossary include applicants, areas,
+    appointments, certificates, companies, contacts, conveyancing, documents,
+    enquiries, identity checks, invoices, journal entries, keys, landlords,
+    negotiators, offers, offices, properties, property alarm data, referrals,
+    sources, tasks, telephony notifications, tenancies, transactions, vendors and
+    works orders. Published rate limits are 20 requests per second, 5 concurrent
+    requests per customer and 250,000 requests per day. The Interactive API
+    Explorer at developers.reapit.cloud/swagger renders a Swagger document, but
+    that document is served from platform.reapit.cloud/docs and requires a bearer
+    token — it returned HTTP 200 with "Could not load Swagger documentation" to an
+    anonymous client, so no spec was harvestable.
+  humanURL: https://foundations-documentation.reapit.cloud/api/api-documentation
+  baseURL: https://platform.reapit.cloud
+  tags:
+  - Real Estate
+  - United Kingdom
+  - CRM
+  - Property Management
+  - Property Listings
+  properties:
+  - type: Documentation
+    url: https://foundations-documentation.reapit.cloud/api/api-documentation
+  - type: APIReference
+    url: https://developers.reapit.cloud/swagger
+  - type: Authentication
+    url: https://foundations-documentation.reapit.cloud/api/api-documentation#authentication
+  - type: Scopes
+    url: https://foundations-documentation.reapit.cloud/platform-glossary/permissions
+  - type: Glossary
+    url: https://foundations-documentation.reapit.cloud/platform-glossary
+  - type: RateLimits
+    url: https://foundations-documentation.reapit.cloud/api/api-documentation#rate-limits
+  - type: Versioning
+    url: https://foundations-documentation.reapit.cloud/api/api-documentation#versioning
+  - type: Errors
+    url: https://foundations-documentation.reapit.cloud/api/api-documentation#errors
+  - type: Sandbox
+    url: https://foundations-documentation.reapit.cloud/api/api-documentation#sandbox-mode
+  - type: Changelog
+    url: https://foundations-documentation.reapit.cloud/whats-new
+  - type: Troubleshooting
+    url: https://foundations-documentation.reapit.cloud/troubleshooting/platform-api
+  - type: TermsOfService
+    url: https://foundations-documentation.reapit.cloud/developer-terms-and-conditions
+  - type: SignUp
+    url: https://developers.reapit.cloud/register
+  - type: LLMsTxt
+    url: https://foundations-documentation.reapit.cloud/llms.txt
+- aid: reapit:reapit-foundations-graphql-api
+  name: Reapit Foundations GraphQL API
+  description: >-
+    A GraphQL proxy over the Foundations Platform REST API, released publicly out
+    of internal beta and used in production by Reapit's own Geo Diary AppMarket
+    app. The stated objective is a schema identical to the REST platform with no
+    extension or deviation. Visiting the endpoint in a browser loads a GraphQL
+    Playground. Authentication is unusual and restrictive: it requires BOTH an
+    `authorization` header carrying the Reapit Connect idToken and a
+    `reapit-connect-token` header carrying the accessToken, which means only the
+    authorization code flow works — client credentials machine-to-machine clients
+    cannot use it. Metadata and Metadata Schema are absent from the schema because
+    arbitrary JSON cannot be strongly typed. No additional charge over the REST
+    API; consumption is billed on the downstream REST calls the proxy makes.
+  humanURL: https://foundations-documentation.reapit.cloud/api/graphql
+  baseURL: https://graphql.reapit.cloud/graphql
+  tags:
+  - GraphQL
+  - Real Estate
+  - United Kingdom
+  - CRM
+  properties:
+  - type: Documentation
+    url: https://foundations-documentation.reapit.cloud/api/graphql
+  - type: Authentication
+    url: https://foundations-documentation.reapit.cloud/api/reapit-connect
+  - type: IssueTracker
+    url: https://github.com/reapit/foundations/issues
+- aid: reapit:reapit-foundations-webhooks
+  name: Reapit Foundations Webhooks
+  description: >-
+    Real-time outbound event delivery from the Reapit CRM to an endpoint you host.
+    Webhooks are created either in the developer portal UI at
+    developers.reapit.cloud/webhooks/new or programmatically through the REST API,
+    are subscribed per customer (including the SBOX sandbox), and support event
+    filters and optional inclusion of semi-structured payload data. Published
+    topics span applicants, appointments, companies, contacts, conveyancing,
+    documents, enquiries, identity checks, landlords, offers, offices, properties,
+    property images, referrals, tenancies and vendors, with created / modified /
+    read variants plus lifecycle events such as offers.accepted, offers.rejected,
+    offers.withdrawn, appointments.cancelled, appointments.confirmed,
+    properties.selling, contacts.optedout, and application.install /
+    application.uninstall for AppMarket installation notifications. Delivery uses
+    exponential backoff on failure, payloads are signed (signing key retrievable
+    from platform.reapit.cloud/webhooks/signing/{id}), and source IP addresses are
+    published for allowlisting.
+  humanURL: https://foundations-documentation.reapit.cloud/api/webhooks
+  baseURL: https://platform.reapit.cloud
+  tags:
+  - Webhooks
+  - Events
+  - Real Estate
+  - United Kingdom
+  properties:
+  - type: Documentation
+    url: https://foundations-documentation.reapit.cloud/api/webhooks
+  - type: Webhooks
+    url: https://foundations-documentation.reapit.cloud/api/webhooks#available-topics
+  - type: Console
+    url: https://developers.reapit.cloud/webhooks/manage
+  - type: Security
+    url: https://foundations-documentation.reapit.cloud/api/webhooks#webhook-source-ip-addresses-allowlisting
+- aid: reapit:reapit-foundations-mcp-server
+  name: Reapit Foundations MCP Server (Alpha)
+  description: >-
+    An alpha Model Context Protocol server exposing the Foundations platform to AI
+    agents over Streamable HTTP at a single endpoint. Authentication is a Reapit
+    Connect JWT that must carry the `agencyCloud/mcp.access` scope (a token
+    without it is rejected with 403), plus a `reapit-customer` tenant header for
+    machine-to-machine clients. Registered tool domains are appointments (the
+    richest, including open-house attendee management), properties (search,
+    appraisals, key movements, driving directions), configuration lookups,
+    contacts, applicants, companies, offices, negotiators, areas, offers,
+    landlords, vendors and tenancies. Related entities are embedded automatically.
+    Early access is by form submission; the endpoint returned HTTP 401 to an
+    anonymous probe.
+  humanURL: https://foundations-documentation.reapit.cloud/api/mcp-alpha
+  baseURL: https://foundations-mcp.iaas.reapit.cloud/mcp
+  tags:
+  - MCP
+  - AI
+  - Agents
+  - Real Estate
+  - United Kingdom
+  properties:
+  - type: Documentation
+    url: https://foundations-documentation.reapit.cloud/api/mcp-alpha
+  - type: MCPServer
+    url: https://foundations-mcp.iaas.reapit.cloud/mcp
+  - type: Authentication
+    url: https://foundations-documentation.reapit.cloud/api/reapit-connect
+- aid: reapit:reapit-connect
+  name: Reapit Connect
+  description: >-
+    Reapit's hosted OpenID Connect identity service, which fronts every other
+    Foundations API. It supports the authorization code flow for user-context
+    applications and the client credentials flow for server-to-server
+    integrations, issuing bearer access tokens with a one-hour lifetime.
+    Application scopes are selected at app registration in the developer portal
+    and are granted per customer at install time. The OIDC discovery document is
+    served anonymously at https://connect.reapit.cloud/.well-known/openid-configuration
+    (HTTP 200) and shows an Auth0-backed tenant with PKCE (S256), device
+    authorization, back-channel authentication, JWKS, dynamic client registration
+    and token revocation endpoints.
+  humanURL: https://foundations-documentation.reapit.cloud/api/reapit-connect
+  baseURL: https://connect.reapit.cloud
+  tags:
+  - Authentication
+  - OpenID Connect
+  - OAuth 2.0
+  - Identity
+  properties:
+  - type: Documentation
+    url: https://foundations-documentation.reapit.cloud/api/reapit-connect
+  - type: OpenIDConnectDiscovery
+    url: authentication/reapit-connect-openid-configuration.json
+  - type: Authentication
+    url: https://connect.reapit.cloud/.well-known/openid-configuration
+  - type: SDK
+    url: https://foundations-documentation.reapit.cloud/app-development/connect-session
+  - type: Troubleshooting
+    url: https://foundations-documentation.reapit.cloud/troubleshooting/reapit-connect
+  - type: Changelog
+    url: https://foundations-documentation.reapit.cloud/reapit-connect-updates
+- aid: reapit:reapit-foundations-notifications-api
+  name: Reapit Foundations Notifications API
+  description: >-
+    An inbound API that lets a third-party application push real-time event
+    notifications into Reapit products for display to named CRM users. Requests
+    POST to /notifications using an envelope-and-payload contract, where the
+    envelope carries the notification type and a `targets` object listing one or
+    more `negotiatorId` values; multiple targets trigger a fan-out. Callers need
+    the `negotiators.read` scope and GET /negotiators to map their own users back
+    to Reapit negotiators. Sandbox testing requires an active Developer Edition
+    subscription and a dedicated negotiator ID, and display inside a live customer
+    CRM must be enabled by Reapit support at the customer's request.
+  humanURL: https://foundations-documentation.reapit.cloud/api/notifications
+  baseURL: https://platform.reapit.cloud
+  tags:
+  - Notifications
+  - Events
+  - Real Estate
+  - United Kingdom
+  properties:
+  - type: Documentation
+    url: https://foundations-documentation.reapit.cloud/api/notifications
+  - type: Authentication
+    url: https://foundations-documentation.reapit.cloud/api/reapit-connect
+- aid: reapit:reapit-agencycloud-desktop-api
+  name: Reapit AgencyCloud Desktop API
+  description: >-
+    A custom URI-scheme API, not an HTTP API, used by AppMarket web applications
+    hosted inside the AgencyCloud desktop CRM to drive the desktop from the
+    embedded app. Links prefixed `agencycloud:` are structured REST-style against
+    AgencyCloud's primary and secondary screens — property (load, matching,
+    journal, offers, search), applicants (load, matching, journal, search),
+    appointments (load diary), contacts (search, load, journal), works orders
+    (load, search) and related screens. Testing requires AgencyCloud Developer
+    Edition, obtained from the Desktop page of the developer portal; Reapit does
+    not provide technical support for Developer Edition, and it is documented as
+    beta with known gaps such as desktop-added images and documents not appearing
+    on the platform.
+  humanURL: https://foundations-documentation.reapit.cloud/api/desktop-api
+  tags:
+  - Desktop
+  - CRM
+  - Real Estate
+  - United Kingdom
+  properties:
+  - type: Documentation
+    url: https://foundations-documentation.reapit.cloud/api/desktop-api
+  - type: DeveloperEdition
+    url: https://developers.reapit.cloud/desktop
+common:
+- type: Website
+  url: https://www.reapit.com/
+- type: Documentation
+  url: https://foundations-documentation.reapit.cloud/
+- type: DeveloperPortal
+  url: https://developers.reapit.cloud/
+- type: SignUp
+  url: https://developers.reapit.cloud/register
+- type: Authentication
+  url: https://foundations-documentation.reapit.cloud/api/reapit-connect
+- type: TermsOfService
+  url: https://foundations-documentation.reapit.cloud/developer-terms-and-conditions
+- type: Marketplace
+  url: https://marketplace.reapit.cloud/apps
+- type: PartnerProgram
+  url: https://www.reapit.com/company/partner-program
+- type: Platform
+  url: https://www.reapit.com/platform
+- type: Support
+  url: https://foundations-documentation.reapit.cloud/help
+- type: StatusPage
+  url: https://status.reapit.com/
+- type: Changelog
+  url: https://foundations-documentation.reapit.cloud/whats-new
+- type: FAQ
+  url: https://foundations-documentation.reapit.cloud/faqs
+- type: LLMsTxt
+  url: https://foundations-documentation.reapit.cloud/llms.txt
+- type: GitHubOrganization
+  url: https://github.com/reapit
+- type: SDK
+  url: https://foundations-documentation.reapit.cloud/app-development/foundations-ts-defintions
+- type: CodeExamples
+  url: https://github.com/reapit/foundations-code-examples
+- type: Blog
+  url: https://www.reapit.com/resources/blog
+- type: PrivacyPolicy
+  url: https://www.reapit.com/legal/privacy-policy
+- type: Contact
+  url: https://www.reapit.com/company/contact
+- type: LinkedIn
+  url: https://www.linkedin.com/company/reapit
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

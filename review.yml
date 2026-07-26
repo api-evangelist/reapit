@@ -1,0 +1,637 @@
+aid: reapit
+name: Reapit
+review:
+  question: What is Reapit's real, publicly reachable API surface, what does a
+    developer have to sign or join to use it, and what is its RESO posture?
+  date: '2026-07-26'
+  reviewer: API Evangelist
+  homeMarket: United Kingdom
+  tier: crm-transaction-tech
+  primaryDomain: reapit.com
+  summary: |
+    Reapit is the strongest developer surface found so far in this sector's UK
+    leg, and it is the clean counter-example to "certified but unreachable".
+    There is no certification here at all — RESO does not exist in the UK — but
+    there is a real, documented, self-serve developer platform called Reapit
+    Foundations. The documentation site at foundations-documentation.reapit.cloud
+    is fully public with no login, publishes an llms.txt index, and serves a
+    markdown version of every page by appending ".md". A four-step registration
+    form at developers.reapit.cloud/register creates a developer account behind
+    published Developer Terms and Conditions, and an SBOX sandbox with
+    demonstration data is callable immediately for both read and write.
+    Authentication is OpenID Connect through Reapit Connect, whose discovery
+    document is served anonymously and was harvested verbatim. The platform
+    covers roughly thirty CRM resource domains, a GraphQL proxy, a webhook system
+    with more than sixty topics, an inbound Notifications API, a desktop URI-scheme
+    API into the AgencyCloud CRM, and an alpha MCP server.
+
+    The one thing that is NOT public is the contract. The Interactive API Explorer
+    at developers.reapit.cloud/swagger is a Swagger UI React SPA that loads its
+    document from platform.reapit.cloud/docs with an injected
+    "Authorization: Bearer" header and an "api-version: 2020-01-31" header. That
+    path answers HTTP 200 to an anonymous client but returns only
+    {"errorType":"string","errorMessage":"Could not load Swagger documentation.
+    Please try again later","trace":[]} — 111 bytes, no spec. Every other spec
+    path probed on that host returned 401. So: zero machine-readable contracts
+    harvested, despite an otherwise open developer surface. The second caveat is
+    the data. Sandbox is self-serve, but no real agency's data is reachable until
+    the app is submitted to the AppMarket, passes Reapit's listing review, and is
+    then installed by that customer, who grants the scopes at install time and
+    can revoke them by uninstalling.
+
+resoPosture:
+  certified: false
+  posture: No RESO reference found anywhere in Reapit's documentation, developer
+    portal, or corporate site; RESO is a North American (NAR/MLS) construct and
+    the United Kingdom has no MLS to certify against.
+  webApiCertification: none found
+  dataDictionaryCertification: none found
+  dataDictionaryVersion: null
+  directoryEvidence: |
+    https://www.reso.org/certificates/ was fetched anonymously (HTTP 200,
+    416,233 bytes) and a case-insensitive search for "reapit" and for
+    "united kingdom" returned zero matches. https://www.reso.org/certification/
+    returned HTTP 200 with no Reapit reference. https://certification.reso.org/
+    returned HTTP 400 to an anonymous client and
+    https://www.reso.org/certified-organizations/ returned HTTP 404. No RESO
+    certification claim appears on any Reapit property.
+  odataEndpoint: none
+  metadataDocument: |
+    Probed https://platform.reapit.cloud/$metadata — HTTP 401, 26 bytes,
+    {"message":"Unauthorized"}. No OData service document or $metadata exists;
+    the platform is described by its own documentation as a hypermedia REST API
+    with date-based versioning and a Swagger contract, not OData.
+  universalPropertyIdentifier: |
+    No UPI. Reapit's own documentation is explicit that its identifiers are the
+    opposite of universal: "the resource identifiers are only unique to a
+    specific customer's database and not globally unique. To determine
+    uniqueness, create a composite key using the customer id and resource id."
+    That is a per-tenant identifier space, structurally incompatible with a UPI.
+  wordBoundaryGrep: |
+    Case-insensitive word-boundary grep for RESO, "Data Dictionary",
+    "Universal Property Identifier", UPI, IDX, VOW, MLS and OData across every
+    harvested Foundations markdown page (api.md, api-documentation.md,
+    webhooks.md, graphql.md, mcp-alpha.md, notifications.md, desktop-api.md,
+    reapit-connect.md, developer-portal.md, permissions.md,
+    developer-terms-and-conditions.md, app-listing-review.md) and llms.txt
+    returned zero hits. A grep of https://www.reapit.com/ for "reso" matched
+    only the substrings inside "resource"/"resolve"-family words.
+  marketNote: |
+    This is the expected and correct UK answer. There is no MLS, so there is no
+    cooperative database to standardise and nothing to certify. Residential
+    listings are controlled by two portals, Rightmove and Zoopla, and they are
+    fed outward from agency CRM systems — Reapit, Alto/Jupix, Street, Apex27 —
+    over proprietary per-vendor contracts. The interesting consequence is that
+    the CRM vendor, not the portal and not a standards body, ends up owning the
+    richest machine-readable property record in the market. Reapit's API is
+    better documented and more open than either portal's, which inverts the US
+    pattern where the standard is mandated and the endpoint is locked.
+
+accessGate:
+  gate: self-serve
+  gated: true
+  selfServe: true
+  gateNuance: |
+    Two gates, and they must not be collapsed. The DEVELOPER gate is self-serve:
+    anyone can complete the registration form, accept the terms, confirm by
+    email, and immediately call the sandbox. The DATA gate is
+    application-approval plus customer consent: no live agency data is reachable
+    until the app is submitted to the AppMarket, reviewed and approved by
+    Reapit's admin team, and then installed by an individual customer who grants
+    the scopes. Classified here as self-serve because a developer really can sign
+    up unaided and make authenticated, writable API calls the same day — but the
+    production surface is gated twice over.
+  whatYouMustSignOrJoin: |
+    You must accept the Reapit Developer Terms and Conditions, presented as a
+    modal in the registration wizard and published in full at
+    https://foundations-documentation.reapit.cloud/developer-terms-and-conditions
+    (89,238 bytes of markdown, including consumption cost methodology and cost
+    type schedules). You do not have to be a Reapit customer, an estate agent, a
+    licensed broker, or a member of any association or board. There is no MLS,
+    board, or IDX/VOW licence in this market. To list an app you must additionally
+    complete Organisation details including company name, VAT/company registration
+    or National Insurance number, and company address, and pass the AppMarket
+    listing review.
+  credentialIssuance: |
+    Self-issued through the developer portal. Registration is a four-step form at
+    https://developers.reapit.cloud/register which POSTs a CreateDeveloperModel
+    with an agreedTerms timestamp; on success you confirm by email and log in
+    through Reapit Connect. Registering an app in the portal yields a client id
+    immediately, and a client secret as well if you selected the client
+    credentials flow. No human issues keys, no GPG exchange, no sales call.
+    Note that the getting-started guide is written for the invited path
+    ("You will receive an email with a link to the developer portal and temporary
+    login credentials"), which reads as invite-only, but the public /register
+    route and its form component in the open-source developer-portal package
+    confirm open self-registration.
+  productionAccess: |
+    Submit the app at https://marketplace.reapit.cloud/developer/submit-app.
+    Reapit's admin team reviews the revision. Once listed, a customer
+    administrator chooses to install it and grants the permissions (OAuth scopes)
+    it requested. Client-credentials callers then pass that customer's unique id
+    in a `reapit-customer` header. If the customer uninstalls, access to their
+    data is revoked immediately.
+  commercialContact: https://www.reapit.com/company/contact
+  partnerProgram: https://www.reapit.com/company/partner-program
+  docsAreOpen: |
+    The documentation is genuinely open — no login, markdown mirrors of every
+    page, and an llms.txt index built for machine consumption. The contract is
+    not: the Swagger document itself is the single authenticated artifact in an
+    otherwise public surface.
+
+openData:
+  publishesOpenData: false
+  note: |
+    Reapit publishes no open, unlicensed, publicly callable dataset. Everything
+    behind Foundations is an individual agency customer's private CRM data,
+    accessible only with that customer's installed consent. The genuinely open UK
+    property layer sits in the public sector — HM Land Registry Price Paid Data
+    and ownership data under the Open Government Licence, and Ordnance Survey
+    open addressing and mapping products — and none of it is operated by Reapit.
+    This is the inverse of the US arrangement: the UK has no industry standard,
+    but it does have real open government property data, and it comes from
+    government rather than from the private market.
+
+authModel:
+  scheme: OpenID Connect on top of OAuth 2.0, via Reapit Connect
+  identityProvider: |
+    Auth0. The anonymously served discovery document at
+    https://connect.reapit.cloud/.well-known/openid-configuration (HTTP 200,
+    2,669 bytes, harvested verbatim to
+    authentication/reapit-connect-openid-configuration.json) lists Auth0-specific
+    grant types such as http://auth0.com/oauth/grant-type/password-realm and
+    http://auth0.com/oauth/grant-type/mfa-oob.
+  issuer: https://connect.reapit.cloud/
+  authorizationEndpoint: https://connect.reapit.cloud/authorize
+  tokenEndpoint: https://connect.reapit.cloud/oauth/token
+  documentedTokenEndpoint: |
+    The REST API documentation instructs client-credentials callers to POST to
+    https://connect.reapit.cloud/token, while the discovery document advertises
+    https://connect.reapit.cloud/oauth/token. Both are recorded as found.
+  jwksUri: https://connect.reapit.cloud/.well-known/jwks.json
+  userinfoEndpoint: https://connect.reapit.cloud/userinfo
+  registrationEndpoint: https://connect.reapit.cloud/oidc/register
+  revocationEndpoint: https://connect.reapit.cloud/oauth/revoke
+  deviceAuthorizationEndpoint: https://connect.reapit.cloud/oauth/device/code
+  backchannelAuthenticationEndpoint: https://connect.reapit.cloud/bc-authorize
+  grants:
+  - name: authorization_code
+    note: For client and server applications with a user in context. Required for
+      the GraphQL service, which needs an idToken.
+  - name: client_credentials
+    note: For server-to-server machine applications with no user in context.
+      HTTP Basic base64(client_id:client_secret) on the token request, and a
+      `reapit-customer` header (or `SBOX`) on every platform call.
+  pkce: S256 and plain both advertised
+  tokenEndpointAuthMethods:
+  - client_secret_basic
+  - client_secret_post
+  - private_key_jwt
+  - none
+  tokenType: Bearer, expires_in 3600
+  oidcScopesAdvertised:
+  - openid
+  - profile
+  - offline_access
+  - name
+  - given_name
+  - family_name
+  - nickname
+  - email
+  - email_verified
+  - picture
+  - created_at
+  - identities
+  - phone
+  - address
+  platformScopeModel: |
+    Platform authorization is a separate, application-level permission model
+    layered on top of the OIDC scopes above. Permissions are selected at app
+    registration, granted per customer at install time, and map to CRM resource
+    domains split into Read (ingest CRM information) and Write (push new or
+    amended data into the CRM). The published permission list covers Applicants,
+    Areas, Appointments, Certificates, Companies, Contacts, Conveyancing,
+    Documents, Enquiries, Identity Checks, Invoices, Journal Entries, Keys,
+    Landlords, Negotiators, Offers, Offices, Properties, Property Alarm Data,
+    Referrals, Sources, Tasks, Telephony Notifications, Tenancies, Transactions,
+    Vendors and Works Orders. Two concrete scope strings appear verbatim in the
+    docs — `agencyCloud/mcp.access` (required for the MCP server; a token without
+    it is rejected with 403) and `negotiators.read` (required to map users for
+    the Notifications API).
+  customerHeader: |
+    `reapit-customer: <customer-id>` identifies the tenant a machine-to-machine
+    request acts for. `SBOX` selects the sandbox. User-context tokens carry the
+    customer code themselves.
+  versionHeader: 'api-version: 2020-01-31 (required on every request)'
+
+apiFamily:
+  segmentationUsedByTheDocs:
+  - MCP (Alpha)
+  - REST API
+  - Webhooks
+  - GraphQL
+  - Reapit Connect
+  - Desktop API
+  - Notifications
+  note: |
+    The seven entries in apis.yml mirror the seven entries Reapit itself lists on
+    https://foundations-documentation.reapit.cloud/api exactly, in the same
+    order-of-meaning. No family was invented and none was merged.
+  listingsSearch: |
+    Yes, but per-tenant. GET /properties on the platform API and
+    `properties_search` on the MCP server search the installed customer's own
+    property records, not a market-wide pool. There is no cross-agency search and
+    no public listings endpoint.
+  propertyRecords: |
+    The richest surface. Properties carry descriptions, notes, marketing
+    material, utilities, keys, certificates, developments, and images including
+    EPCs, floorplans and maps. Sub-resources include appraisals, key movements and
+    property alarm data.
+  valuationAVM: |
+    No AVM. The closest thing is the Appraisals sub-resource on properties and
+    the appraisal lead concept — an agent's valuation appointment, not an
+    automated valuation model. Reapit does not publish a valuation API.
+  transactions: |
+    Yes. Conveyancing (sales progression and chain management), Offers with
+    accepted/rejected/withdrawn lifecycle, Invoices, and Transactions (lettings
+    transactions and works orders) are all first-class resource domains.
+  documents: |
+    Yes. A Documents domain with typed file assets attached to entities, uploaded
+    through pre-signed URLs.
+  tenancy: |
+    Yes, and it is a genuine strength relative to the rest of this sector.
+    Tenancies, Landlords, Vendors, Works Orders, Certificates (safety checks,
+    insurance and warranties) and Property Alarm Data cover the lettings and
+    property-management side that most listing-oriented APIs omit entirely.
+  payments: |
+    No payments API in the Foundations documentation. Client Accounts (rent runs
+    and landlord payments) is a Reapit product, delivered via a PayProp connector
+    rather than a documented developer API. An internal
+    payments-service.prod.paas.reapit.cloud host appears in the developer portal
+    bundle but is not documented publicly.
+  metadata: |
+    A metadata service allows custom fields to be attached to Reapit entities and
+    entirely custom entities to be created, validated against a schema, and
+    searched. This is the platform's extensibility seam and is explicitly absent
+    from the GraphQL proxy because arbitrary JSON cannot be strongly typed.
+
+harvest:
+  fetchDate: '2026-07-26'
+  openapiHarvested: false
+  specsCount: 0
+  whyNoSpec: |
+    The Swagger document exists but is not anonymously reachable. The
+    open-source developer portal component
+    packages/developer-portal/src/components/swagger/index.tsx uses
+    swagger-ui-react with a requestInterceptor that injects
+    `api-version: 2020-01-31` and `Authorization: Bearer <accessToken>` from the
+    Reapit Connect session onto the swaggerUri fetch. The unauthenticated fetch
+    of https://platform.reapit.cloud/docs returns HTTP 200 with a 111-byte error
+    body rather than a spec, and every neighbouring spec path returns 401. The
+    npm package @reapit/foundations-ts-definitions@2.1.23 — documented as
+    generated "from the Swagger contracts direct with a daily CRON job" — was
+    downloaded and its tarball contains only dist/index.js, index.mjs,
+    index.d.ts, index.d.mts, package.json and README.md, with no bundled spec.
+    A recursive tree search of github.com/reapit/foundations (6,939 paths) and
+    github.com/reapit/foundations-documentation found no committed swagger or
+    openapi document, only .yarn cache archives and screenshots.
+  artifactsSaved:
+  - path: authentication/reapit-connect-openid-configuration.json
+    sourceURL: https://connect.reapit.cloud/.well-known/openid-configuration
+    httpStatus: 200
+    bytes: 2669
+    format: OpenID Connect Discovery 1.0
+    parsed: true
+    note: Saved verbatim, unmodified. Fetched anonymously with no credentials.
+
+probes:
+- url: https://www.reapit.com/
+  status: 200
+  note: Corporate site (Webflow-hosted). Products, markets and customer claims.
+- url: https://reapit.com/
+  status: 200
+- url: https://developers.reapit.com/
+  status: '000'
+  note: TLS failure — no alternative certificate subject name matches this host.
+    The developer portal lives on reapit.cloud, not reapit.com.
+- url: https://developer.reapit.com/
+  status: '000'
+  note: Does not resolve.
+- url: https://docs.reapit.com/
+  status: '000'
+  note: Does not resolve.
+- url: https://api.reapit.com/
+  status: '000'
+  note: Does not resolve.
+- url: https://foundations-documentation.reapit.cloud/
+  status: 200
+  note: The real documentation site (GitBook-published). Fully public, no login.
+- url: https://foundations-documentation.reapit.cloud/llms.txt
+  status: 200
+  note: 6,260-byte machine-readable index of every documentation page. A genuine
+    agent-readiness signal and rare in this sector.
+- url: https://foundations-documentation.reapit.cloud/api/api-documentation
+  status: 200
+- url: https://foundations-documentation.reapit.cloud/api/api-documentation.md
+  status: 200
+  note: 45,130 bytes of markdown. Base URLs, auth, sandbox, versioning, rate
+    limits, hypermedia, metadata.
+- url: https://foundations-documentation.reapit.cloud/api/webhooks.md
+  status: 200
+  note: 56,533 bytes. Topic catalogue, filters, signing, backoff, IP allowlist.
+- url: https://foundations-documentation.reapit.cloud/api/graphql.md
+  status: 200
+- url: https://foundations-documentation.reapit.cloud/api/mcp-alpha.md
+  status: 200
+- url: https://foundations-documentation.reapit.cloud/api/notifications.md
+  status: 200
+- url: https://foundations-documentation.reapit.cloud/api/desktop-api.md
+  status: 200
+- url: https://foundations-documentation.reapit.cloud/api/reapit-connect.md
+  status: 200
+- url: https://foundations-documentation.reapit.cloud/developer-portal.md
+  status: 200
+- url: https://foundations-documentation.reapit.cloud/platform-glossary/permissions.md
+  status: 200
+  note: The full Read/Write permission catalogue across 27 CRM resource domains.
+- url: https://foundations-documentation.reapit.cloud/developer-terms-and-conditions.md
+  status: 200
+  note: 89,238 bytes. The agreement accepted at registration.
+- url: https://foundations-documentation.reapit.cloud/listing-your-app/app-listing-review.md
+  status: 200
+- url: https://foundations-documentation.reapit.cloud/whats-new.md
+  status: 200
+  note: Public changelog for the platform APIs.
+- url: https://foundations-documentation.reapit.cloud/robots.txt
+  status: 200
+- url: https://foundations-documentation.reapit.cloud/openapi.json
+  status: 404
+- url: https://developers.reapit.cloud/
+  status: 200
+  note: The developer portal. A Vite/React SPA; all client-side routes return the
+    same 1,260-byte shell, so route-level 200s are not evidence of a real page.
+- url: https://developers.reapit.cloud/register
+  status: 200
+  note: Self-registration route. The four-step form and terms modal are confirmed
+    in the open-source source at
+    packages/developer-portal/src/components/register/ in reapit/foundations.
+- url: https://developers.reapit.cloud/swagger
+  status: 200
+  note: SPA shell only. The Interactive API Explorer renders client-side and
+    fetches its document with a bearer token.
+- url: https://developers.reapit.cloud/select-role
+  status: 200
+- url: https://platform.reapit.cloud/
+  status: 401
+  note: The real API host. {"message":"Unauthorized"} to anonymous callers.
+- url: https://platform.reapit.cloud/properties
+  status: 401
+- url: https://platform.reapit.cloud/docs
+  status: 200
+  note: 111 bytes — {"errorType":"string","errorMessage":"Could not load Swagger
+    documentation. Please try again later","trace":[]}. Publicly reachable but
+    serves no spec without a bearer token. Retried with api-version and
+    Accept headers and with ?format=openapi; identical response every time.
+- url: https://platform.reapit.cloud/swagger/v1/swagger.json
+  status: 401
+- url: https://platform.reapit.cloud/swagger
+  status: 401
+- url: https://platform.reapit.cloud/swagger/index.html
+  status: 401
+- url: https://platform.reapit.cloud/openapi.json
+  status: 401
+- url: https://platform.reapit.cloud/swagger.json
+  status: 401
+- url: https://platform.reapit.cloud/v1/swagger.json
+  status: 401
+- url: https://platform.reapit.cloud/docs/swagger.json
+  status: 401
+- url: https://platform.reapit.cloud/docs/api-docs
+  status: 401
+- url: 'https://platform.reapit.cloud/$metadata'
+  status: 401
+  note: No OData. RESO-style $metadata does not exist here.
+- url: https://platform.reapit.cloud/health
+  status: 401
+- url: https://platform.au.rc.reapit.cloud/
+  status: 403
+  note: Australian regional platform host, discovered in the developer portal
+    JavaScript bundle. Confirms a second deployment region for the ANZ market.
+- url: https://platform.au.rc.reapit.cloud/docs
+  status: 403
+- url: https://connect.reapit.cloud/.well-known/openid-configuration
+  status: 200
+  note: Harvested verbatim. Auth0-backed OIDC discovery document.
+- url: https://graphql.reapit.cloud/graphql
+  status: 400
+  note: Live GraphQL host. Responds 400 to an unauthenticated GET with no query,
+    which is the endpoint answering rather than a gateway rejecting.
+- url: https://graphql.reapit.cloud/
+  status: 403
+- url: https://foundations-mcp.iaas.reapit.cloud/mcp
+  status: 401
+  note: The alpha MCP server endpoint, live and rejecting anonymous callers.
+- url: https://marketplace.reapit.cloud/
+  status: 200
+- url: https://marketplace.reapit.cloud/apps
+  status: 200
+  note: The AppMarket. SPA.
+- url: https://api-key.prod.paas.reapit.cloud/api-key
+  status: 401
+  note: Internal PaaS service found in the portal bundle; not documented publicly.
+- url: https://api.reapit.cloud/
+  status: '000'
+  note: Does not resolve.
+- url: https://status.reapit.com/
+  status: 200
+  note: Public status page.
+- url: https://www.reapit.com/.well-known/security.txt
+  status: 404
+- url: https://www.reapit.com/sitemap.xml
+  status: 200
+  note: 52,025 bytes. No /developers, /api, /integrations or /partners page —
+    the developer surface is not linked from the marketing site's sitemap; only
+    /company/partner-program mentions self-service enrolment.
+- url: https://www.reapit.com/company/partner-program
+  status: 200
+  note: Describes "self-service enrolment", "manage your own keys and enrol to
+    APIs", sandbox, notifications, events and analytics, and points at
+    developers.reapit.cloud/select-role.
+- url: https://www.reapit.com/platform
+  status: 200
+  note: |
+    Sales CRM, Lettings CRM, Property Management, Bookings, Client Accounts
+    (PayProp connector), DataWarehouse, Reapit Go, AppMarket integrations.
+    Markets named: UK & Ireland, Australia & New Zealand, Denmark (Mindworking).
+    Portal integrations named: Rightmove, Zoopla, OnTheMarket.
+- url: https://www.reapit.com/developers
+  status: 404
+- url: https://www.reapit.com/integrations
+  status: 404
+- url: https://www.reapit.com/partners
+  status: 404
+- url: https://github.com/reapit/foundations
+  status: 200
+  note: Public monorepo, 6,939 tracked paths. Contains the developer portal
+    source that reveals the swagger fetch interceptor and the registration form.
+- url: https://github.com/reapit/foundations-code-examples
+  status: 200
+- url: https://registry.npmjs.org/@reapit/foundations-ts-definitions/-/foundations-ts-definitions-2.1.23.tgz
+  status: 200
+  note: Downloaded and listed. Types only, no spec.
+- url: https://www.postman.com/reapit
+  status: 200
+  note: Postman returns its SPA shell for any path; the response contains no
+    Reapit workspace content. Treated as no official Postman workspace.
+- url: https://www.reso.org/certificates/
+  status: 200
+  note: Searched for "reapit" and "united kingdom" — zero matches.
+- url: https://www.reso.org/certification/
+  status: 200
+- url: https://www.reso.org/certified-organizations/
+  status: 404
+- url: https://certification.reso.org/
+  status: 400
+- url: https://www.linkedin.com/company/reapit
+  status: 999
+  note: LinkedIn's standard anti-automation response; the company page exists.
+
+webhooksEventsSdksPostman:
+  webhooks: |
+    Yes, and they are the most complete webhook system found in this sector's UK
+    leg. More than sixty topics across applicants, appointments, companies,
+    contacts, conveyancing, documents, enquiries, identity checks, landlords,
+    offers, offices, properties, property images, referrals, tenancies and
+    vendors, with created / modified / read variants plus real lifecycle events
+    (offers.accepted, offers.rejected, offers.withdrawn, appointments.cancelled,
+    appointments.confirmed, properties.selling, contacts.optedout,
+    enquiries.accepted, enquiries.rejected, contacts.landlorddetails) and
+    platform events (application.install, application.uninstall). Subscriptions
+    are per customer and support event filters and optional semi-structured
+    payload data. Payloads describe the data change, not just the fact of it, so
+    a consumer often needs no follow-up call. Delivery retries with exponential
+    backoff, payloads are signed via a signing key at
+    platform.reapit.cloud/webhooks/signing/{id}, source IPs are published for
+    allowlisting, and webhooks can be created programmatically as well as in the
+    portal UI. Sandbox testing against SBOX events is supported.
+  events: |
+    Beyond webhooks there is an inbound Notifications API (POST /notifications
+    with an envelope/payload contract and negotiatorId fan-out targets). No
+    AsyncAPI document, no event bus, no WebSocket surface, no streaming.
+  mcp: |
+    Yes — an alpha Model Context Protocol server over Streamable HTTP at
+    https://foundations-mcp.iaas.reapit.cloud/mcp, gated on the
+    `agencyCloud/mcp.access` scope, with ~40 named tools across thirteen domains.
+    Registration for early access is via a HubSpot form linked from the docs.
+    This is the only MCP server encountered in the UK real-estate leg of this
+    study.
+  sdks: |
+    Real, first-party, and published to npm: @reapit/foundations-ts-definitions
+    (TypeScript types regenerated daily from the Swagger contracts, including
+    webhook payload types keyed by topic id), @reapit/connect-session and
+    @reapit/connect-session-server (OAuth helpers), @reapit/elements (React
+    component library), plus a Vite template, a Create React App template, and an
+    IaaS CLI in beta. Code examples live at github.com/reapit/foundations-code-examples.
+  postman: No official Postman collection or workspace found.
+  changelog: Yes — https://foundations-documentation.reapit.cloud/whats-new
+  statusPage: Yes — https://status.reapit.com/ (HTTP 200).
+  rateLimits: |
+    Published: 20 requests per second, 5 concurrent requests per customer,
+    250,000 requests per day.
+  sandbox: |
+    Yes and it is real. SBOX provides demonstration data supporting all read AND
+    write requests, reachable either by authorization code flow with developer
+    portal credentials or by client credentials flow with `SBOX` as the
+    `reapit-customer` header. The Interactive API Explorer is wired to it
+    automatically. Note that Notifications API sandbox testing additionally
+    requires an active Developer Edition subscription.
+  deprecationPolicy: |
+    Documented. Date-based versioning with an explicit breaking-change definition
+    and a deprecation section in the REST API documentation.
+
+findings:
+- Reapit is the open end of the UK real-estate spectrum. Where the portals gate
+  their contracts behind membership, the CRM vendor publishes a full public
+  documentation site, an llms.txt index, markdown mirrors of every page, an
+  open-source developer portal, and self-serve registration.
+- The one artifact that would matter most to a machine — the Swagger document —
+  is the single authenticated thing on an otherwise open surface. It returns
+  HTTP 200 anonymously and then refuses to be a spec. Zero contracts harvested.
+- Certification is not the axis here at all. There is no RESO, no OData, no UPI,
+  and no MLS to certify against. Reapit's identifiers are explicitly per-tenant
+  and not globally unique, which is the structural opposite of a UPI.
+- The access gate splits cleanly in two, and conflating them would misrepresent
+  the provider. Developer access is self-serve and same-day. Customer data access
+  requires AppMarket review plus an individual agency's install and scope grant,
+  revocable by uninstall.
+- Reapit ships an alpha MCP server with a dedicated OAuth scope. That is a more
+  advanced agent posture than anything else found in the UK real-estate leg, and
+  it is layered on the same token infrastructure rather than bolted on.
+- The lettings and property-management depth — tenancies, landlords, works
+  orders, certificates, alarm data, key movements — is a genuine differentiator.
+  Listing-portal APIs in this market have none of it.
+- Absence is a finding - no OpenAPI or Swagger downloadable anonymously, no
+  OData $metadata, no RESO, no UPI, no AsyncAPI, no Postman workspace, no
+  payments API, no open data, and no developer link anywhere in the marketing
+  site's sitemap.
+
+sources:
+- url: https://foundations-documentation.reapit.cloud/
+  type: Documentation
+  note: Public Foundations documentation site; no login required.
+- url: https://foundations-documentation.reapit.cloud/llms.txt
+  type: LLMsTxt
+  note: Machine-readable index of the whole documentation set.
+- url: https://foundations-documentation.reapit.cloud/api/api-documentation
+  type: APIReference
+  note: Base URLs, OIDC auth, sandbox, rate limits, versioning, metadata,
+    hypermedia, optimistic concurrency.
+- url: https://foundations-documentation.reapit.cloud/api/mcp-alpha
+  type: Documentation
+  note: MCP endpoint, agencyCloud/mcp.access scope, full tool inventory.
+- url: https://foundations-documentation.reapit.cloud/api/graphql
+  type: Documentation
+  note: graphql.reapit.cloud/graphql, dual-header auth, authorization-code only.
+- url: https://foundations-documentation.reapit.cloud/api/webhooks
+  type: Documentation
+  note: Topic catalogue, signing, filters, retries, IP allowlisting.
+- url: https://foundations-documentation.reapit.cloud/api/notifications
+  type: Documentation
+  note: POST /notifications envelope contract and negotiator targeting.
+- url: https://foundations-documentation.reapit.cloud/api/desktop-api
+  type: Documentation
+  note: The `agencycloud:` custom URI scheme for embedded AppMarket apps.
+- url: https://foundations-documentation.reapit.cloud/developer-portal
+  type: Documentation
+  note: Registration, app creation, permission selection, submit-for-review flow.
+- url: https://foundations-documentation.reapit.cloud/platform-glossary/permissions
+  type: Scopes
+  note: The Read/Write permission catalogue across 27 CRM resource domains.
+- url: https://foundations-documentation.reapit.cloud/developer-terms-and-conditions
+  type: TermsOfService
+  note: The agreement accepted in the registration wizard, with consumption cost
+    schedules.
+- url: https://connect.reapit.cloud/.well-known/openid-configuration
+  type: Authentication
+  note: Harvested verbatim; Auth0-backed OIDC discovery.
+- url: https://github.com/reapit/foundations
+  type: SourceCode
+  note: packages/developer-portal/src/components/swagger/index.tsx proves the
+    bearer-token interceptor on the swagger fetch;
+    packages/developer-portal/src/components/register/ proves self-registration.
+- url: https://www.reapit.com/company/partner-program
+  type: Reference
+  note: |
+    The "self-service enrolment" claim and the developers.reapit.cloud pointer.
+- url: https://www.reapit.com/platform
+  type: Reference
+  note: Product set, markets (UK & Ireland, ANZ, Denmark), portal integrations.
+- url: https://www.reso.org/certificates/
+  type: Reference
+  note: RESO certificate directory; no Reapit and no UK entries.
+
+actions:
+  apisYmlCreated: true
+  apisListed: 7
+  specsHarvested: 0
+  otherArtifactsSaved: 1
