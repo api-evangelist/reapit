@@ -1,0 +1,169 @@
+generated: '2026-07-26'
+method: searched
+source: >-
+  npm registry search for the @reapit and @reapit-cdk scopes, cross-checked
+  against the Open Source Packages section of
+  https://foundations-documentation.reapit.cloud/app-development
+description: >-
+  Reapit publishes its Foundations client libraries exclusively to npm under the
+  @reapit scope — there is no PyPI, Maven Central, NuGet, RubyGems, Packagist,
+  crates.io or Go module distribution, which follows from Foundations being a
+  React/TypeScript app platform rather than a general-purpose server SDK
+  ecosystem. The packages split into four families: auth helpers
+  (connect-session, connect-session-server, login-with-reapit), generated API
+  types (foundations-ts-definitions), UI component libraries (elements,
+  elemental), and the IaaS tooling (cli, templates). A separate @reapit-cdk
+  scope publishes AWS CDK constructs used to run apps on Reapit's IaaS platform;
+  those are infrastructure constructs, not API clients.
+registries_probed:
+- registry: npm
+  result: 40+ packages under @reapit / @reapit-cdk
+- registry: pypi
+  result: none
+- registry: maven-central
+  result: none
+- registry: nuget
+  result: none
+- registry: rubygems
+  result: none
+- registry: packagist
+  result: none
+- registry: crates.io
+  result: none
+- registry: pkg.go.dev
+  result: none
+packages:
+- language: typescript
+  registry: npm
+  name: "@reapit/foundations-ts-definitions"
+  version: 2.1.23
+  url: https://www.npmjs.com/package/@reapit/foundations-ts-definitions
+  install: npm install @reapit/foundations-ts-definitions
+  official: true
+  category: api-types
+  description: >-
+    Automatically generated TypeScript definitions for the Foundations API
+    Platform, regenerated from the platform Swagger document. This is the
+    closest thing Reapit publishes to a machine-readable REST contract in the
+    open — the Swagger itself at platform.reapit.cloud/docs is bearer-gated.
+    Also carries the webhook payload types.
+  docs: https://foundations-documentation.reapit.cloud/app-development/foundations-ts-defintions
+- language: typescript
+  registry: npm
+  name: "@reapit/connect-session"
+  version: 6.2.2
+  url: https://www.npmjs.com/package/@reapit/connect-session
+  install: npm install @reapit/connect-session
+  official: true
+  category: authentication
+  description: >-
+    Browser-side OAuth 2.0 authorization-code (PKCE) flow helper for Reapit
+    Connect — obtains and refreshes the idToken/accessToken pair that every
+    Foundations call needs.
+  docs: https://foundations-documentation.reapit.cloud/app-development/connect-session
+- language: typescript
+  registry: npm
+  name: "@reapit/connect-session-server"
+  version: 1.1.0
+  url: https://www.npmjs.com/package/@reapit/connect-session-server
+  install: npm install @reapit/connect-session-server
+  official: true
+  category: authentication
+  description: Server-side OAuth flow helper for Reapit Connect (Node).
+- language: typescript
+  registry: npm
+  name: "@reapit/login-with-reapit"
+  version: 1.0.6
+  url: https://www.npmjs.com/package/@reapit/login-with-reapit
+  install: npm install @reapit/login-with-reapit
+  official: true
+  category: authentication
+  description: A single drop-in "Login with Reapit" button component.
+  docs: https://foundations-documentation.reapit.cloud/app-development/web
+- language: typescript
+  registry: npm
+  name: "@reapit/cli"
+  version: 2.1.6
+  url: https://www.npmjs.com/package/@reapit/cli
+  install: npm i -g @reapit/cli
+  official: true
+  category: cli
+  description: >-
+    First-party CLI for the Reapit IaaS platform — pipeline create/edit/link/
+    delete and release list/version/zip/repo, plus React app bootstrap. Command
+    surface captured in cli/reapit-cli.yml.
+  docs: https://foundations-documentation.reapit.cloud/app-development/iaas/cli-beta
+- language: typescript
+  registry: npm
+  name: "@reapit/elements"
+  version: 5.1.0
+  url: https://www.npmjs.com/package/@reapit/elements
+  install: npm install @reapit/elements
+  official: true
+  category: ui-components
+  description: >-
+    React implementation of the Reapit Design System, used by Reapit's own
+    products. v5 is a significant rewrite; v4 is in maintenance mode.
+  docs: https://foundations-documentation.reapit.cloud/app-development/elements
+- language: typescript
+  registry: npm
+  name: "@reapit/elemental"
+  version: 1.2.4
+  url: https://www.npmjs.com/package/@reapit/elemental
+  install: npm install @reapit/elemental
+  official: true
+  category: ui-components
+  description: >-
+    Complementary React design-system package built on ShadCN/ui, designed to
+    work alongside @reapit/elements.
+- language: typescript
+  registry: npm
+  name: "@reapit/cra-template-foundations"
+  version: 5.1.9
+  url: https://www.npmjs.com/package/@reapit/cra-template-foundations
+  install: npx create-react-app my-app --template @reapit/foundations
+  official: true
+  category: template
+  description: Create React App template pre-wired for Foundations auth and Elements.
+  docs: https://foundations-documentation.reapit.cloud/app-development/create-react-app-template
+- language: typescript
+  registry: npm
+  name: "@reapit/config-manager"
+  version: 2.1.0
+  url: https://www.npmjs.com/package/@reapit/config-manager
+  official: true
+  category: tooling
+  description: Node package for managing configuration and env vars in AWS Systems Manager.
+- language: typescript
+  registry: npm
+  name: "@reapit-cdk/edge-api"
+  version: 0.1.2
+  url: https://www.npmjs.com/package/@reapit-cdk/edge-api
+  install: npm install @reapit-cdk/edge-api
+  official: true
+  category: infrastructure
+  description: >-
+    AWS CDK construct creating a globally available API executing at the edge.
+    One of ~20 @reapit-cdk constructs open-sourced from reapit/ts-cdk-constructs
+    (edge-api-sdk, edge-api-swagger, email-receiver, replicated-secret,
+    replicated-key, wildcard-certificate, service-quotas, cloudfront-
+    invalidation, cross-region-stack-export, entra-id-application, ...).
+  repo: https://github.com/reapit/ts-cdk-constructs
+third_party:
+- language: javascript
+  registry: npm
+  name: "@pipedream/reapit_foundations"
+  url: https://www.npmjs.com/package/@pipedream/reapit_foundations
+  official: false
+  description: Pipedream components for Reapit Foundations (community/integrator, not Reapit).
+- language: typescript
+  registry: npm
+  name: "@iamproperty/reapit-elements"
+  url: https://www.npmjs.com/package/@iamproperty/reapit-elements
+  official: false
+  description: A third-party fork/wrapper of Reapit Elements by iamproperty.
+gaps:
+- No server-side SDK in Python, Java, C#, PHP, Ruby, Go or Rust — integrators
+  outside the JS/TS ecosystem hand-roll HTTP against the REST platform.
+- No generated GraphQL client, despite the public GraphQL proxy at
+  graphql.reapit.cloud/graphql being introspectable.

@@ -1,0 +1,162 @@
+generated: '2026-07-26'
+method: searched
+source: >-
+  https://foundations-documentation.reapit.cloud/api/reapit-connect ,
+  https://foundations-documentation.reapit.cloud/api/api-documentation#authentication
+  , and the live discovery document at
+  https://connect.reapit.cloud/.well-known/openid-configuration (HTTP 200,
+  fetched 2026-07-26)
+docs: https://foundations-documentation.reapit.cloud/api/reapit-connect
+description: >-
+  Every Foundations surface — REST, GraphQL, webhooks management, notifications
+  and MCP — is fronted by one hosted identity service, Reapit Connect, an
+  Auth0-backed OpenID Connect tenant at connect.reapit.cloud. Two grants are
+  supported: authorization code (user context, PKCE S256) and client credentials
+  (machine-to-machine). The auth model has three quirks worth knowing before
+  writing code: client-credentials callers MUST send a reapit-customer tenant
+  header, the GraphQL proxy requires BOTH the idToken and the accessToken in two
+  different headers (which excludes client-credentials clients entirely), and
+  the MCP server additionally requires the agencyCloud/mcp.access scope on the
+  token.
+summary:
+  types: [oauth2, openIdConnect]
+  api_key_in: []
+  oauth2_flows: [authorizationCode, clientCredentials]
+  token_type: Bearer (JWT)
+  token_lifetime_seconds: 3600
+  refresh: supported via offline_access / refresh_token grant
+  mtls: false
+issuer:
+  name: Reapit Connect
+  issuer: https://connect.reapit.cloud/
+  backing_provider: Auth0
+  discovery: https://connect.reapit.cloud/.well-known/openid-configuration
+  discovery_file: well-known/reapit-openid-configuration.json
+  oauth_metadata: https://connect.reapit.cloud/.well-known/oauth-authorization-server
+  oauth_metadata_file: well-known/reapit-oauth-authorization-server.json
+  jwks_uri: https://connect.reapit.cloud/.well-known/jwks.json
+  jwks_file: well-known/reapit-connect-jwks.json
+endpoints:
+  authorization: https://connect.reapit.cloud/authorize
+  token: https://connect.reapit.cloud/oauth/token
+  token_documented_alias: https://connect.reapit.cloud/token
+  userinfo: https://connect.reapit.cloud/userinfo
+  device_authorization: https://connect.reapit.cloud/oauth/device/code
+  backchannel_authentication: https://connect.reapit.cloud/bc-authorize
+  registration: https://connect.reapit.cloud/oidc/register
+  revocation: https://connect.reapit.cloud/oauth/revoke
+  end_session: https://connect.reapit.cloud/oidc/logout
+  mfa_challenge: https://connect.reapit.cloud/mfa/challenge
+  global_token_revocation: https://connect.reapit.cloud/oauth/global-token-revocation/connection/{connectionName}
+schemes:
+- name: ReapitConnectAuthorizationCode
+  type: oauth2
+  flow: authorizationCode
+  pkce: true
+  code_challenge_methods: [S256, plain]
+  authorizationUrl: https://connect.reapit.cloud/authorize
+  tokenUrl: https://connect.reapit.cloud/oauth/token
+  audience: user-context web and client-side applications
+  sdk: "@reapit/connect-session (browser), @reapit/connect-session-server (Node)"
+  note: >-
+    The only grant that works against the GraphQL proxy, because GraphQL needs
+    an idToken as well as an accessToken.
+- name: ReapitConnectClientCredentials
+  type: oauth2
+  flow: clientCredentials
+  tokenUrl: https://connect.reapit.cloud/oauth/token
+  client_auth: 'HTTP Basic — Authorization: Basic base64(client_id:client_secret)'
+  content_type: application/x-www-form-urlencoded
+  request_params: [client_id, grant_type=client_credentials]
+  audience: server-side machine-to-machine applications with no user in context
+  warning: >-
+    Reapit explicitly forbids using this grant from client-side-only apps; a
+    server-side component is required to store the secret safely.
+  extra_header:
+    name: reapit-customer
+    required: true
+    description: the customer's unique id, or SBOX for the sandbox
+- name: BearerToken
+  type: http
+  scheme: bearer
+  bearerFormat: JWT
+  description: 'How the issued access token is presented: Authorization: Bearer <token>'
+supported_grant_types:
+- client_credentials
+- authorization_code
+- refresh_token
+- password
+- implicit
+- urn:ietf:params:oauth:grant-type:device_code
+- urn:ietf:params:oauth:grant-type:token-exchange
+- urn:ietf:params:oauth:grant-type:jwt-bearer
+- http://auth0.com/oauth/grant-type/password-realm
+- http://auth0.com/oauth/grant-type/passwordless/otp
+- http://auth0.com/oauth/grant-type/mfa-oob
+- http://auth0.com/oauth/grant-type/mfa-otp
+- http://auth0.com/oauth/grant-type/mfa-recovery-code
+supported_grant_types_note: >-
+  This is the raw Auth0 tenant capability from the discovery document. Reapit
+  documents only authorization_code and client_credentials as supported for
+  Foundations applications; do not build against the others.
+token_endpoint_auth_methods: [client_secret_basic, client_secret_post, private_key_jwt,
+  none]
+id_token_signing_algs: [HS256, RS256, PS256]
+dpop_signing_algs: [ES256]
+capabilities:
+  pkce: true
+  dynamic_client_registration: true
+  device_authorization: true
+  backchannel_authentication: true
+  backchannel_logout: true
+  token_revocation: true
+  mfa: true
+  request_parameter_supported: false
+  request_uri_parameter_supported: false
+per_surface:
+- surface: Foundations REST API
+  base_url: https://platform.reapit.cloud
+  headers:
+    Authorization: Bearer <access token>
+    reapit-customer: required for client-credentials callers (SBOX for sandbox)
+    api-version: '2020-01-31 (required)'
+- surface: Foundations GraphQL proxy
+  base_url: https://graphql.reapit.cloud/graphql
+  headers:
+    authorization: the Reapit Connect idToken
+    reapit-connect-token: the Reapit Connect accessToken
+  constraint: >-
+    Requires BOTH tokens, so only the authorization-code flow works —
+    client-credentials machine-to-machine clients cannot use GraphQL at all.
+  note: >-
+    Schema INTROSPECTION is anonymous (verified 2026-07-26); only execution is
+    gated.
+- surface: Foundations MCP server (alpha)
+  base_url: https://foundations-mcp.iaas.reapit.cloud/mcp
+  headers:
+    Authorization: Bearer <Reapit Connect JWT>
+    reapit-customer: machine-to-machine clients only
+    x-timezone: optional, default UTC
+  required_scope: agencyCloud/mcp.access
+  failure: 403 when the scope is absent
+- surface: Foundations Webhooks (inbound to your endpoint)
+  direction: Reapit -> you
+  verification: Ed25519 signature in the X-Signature header (s:keyId:timestamp:signature)
+  public_key: GET https://platform.reapit.cloud/webhooks/signing/{id} (bearer required)
+- surface: Reapit IaaS CLI
+  mechanism: API key created on the pipelines page of the developer portal
+  command: reapit config
+authorization_model:
+  registration: submit the app to the AppMarket to be issued a client id and secret
+  portal: https://marketplace.reapit.cloud/developer/apps
+  install: >-
+    A customer administrator installs the listed app and grants the permissions
+    (scopes) it requested; access is revoked on uninstall.
+  scopes: scopes/reapit-scopes.yml
+  identifier_caveat: >-
+    Resource ids are unique only within one customer database — build a
+    composite key of customerId + resource id.
+troubleshooting:
+- https://foundations-documentation.reapit.cloud/troubleshooting/authentication-issues
+- https://foundations-documentation.reapit.cloud/troubleshooting/reapit-connect
+- https://foundations-documentation.reapit.cloud/troubleshooting/accessing-customer-data

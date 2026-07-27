@@ -1,0 +1,139 @@
+generated: '2026-07-26'
+method: searched
+source: https://foundations-documentation.reapit.cloud/whats-new
+description: >-
+  Reapit maintains a genuinely dated, month-by-month "What's New" changelog for
+  the public APIs going back to October 2020 — roughly seventy dated sections.
+  Its character is worth noting: in nearly six years there has been exactly one
+  API version (2020-01-31), and every entry below is additive — new fields, new
+  statuses, new embeds, relaxed validation. Reapit has grown the surface without
+  cutting a second dated version, which is a strong signal on the breaking-change
+  discipline described in lifecycle/reapit-lifecycle.yml. Entries are written
+  endpoint-first, usually with a JSON example, which makes them unusually
+  actionable for an integrator. A separate changelog tracks Reapit Connect.
+scheme: dated monthly sections (earlier history uses DD/MM/YY section headings)
+current_version: '2020-01-31'
+version_header: api-version
+url: https://foundations-documentation.reapit.cloud/whats-new
+related:
+  reapit_connect_updates: https://foundations-documentation.reapit.cloud/reapit-connect-updates
+  feature_requests: https://foundations-documentation.reapit.cloud/dev-requests
+history_starts: '2020-10-10'
+window: recent — see the live page for the full history
+entries:
+- period: '2026-07'
+  breaking: false
+  highlights:
+  - area: enquiries
+    change: Enquiries can be created with 0 bedrooms, supporting enquiry types such
+      as land.
+    endpoints: [POST /enquiries]
+  - area: negotiators
+    change: Negotiators with matching contact numbers can be retrieved along with their
+      additionalContactDetails.
+    endpoints: [GET /negotiators, "GET /negotiators/{id}"]
+  - area: works orders
+    change: The "Raised To Chase" works order status can be created, updated and retrieved,
+      with a raisedToChaseDays interval (defaults to 1 day on create; both status and
+      interval must be supplied on update).
+    endpoints: [GET /worksOrders, "GET /worksOrders/{id}", POST /worksOrders, "PATCH /worksOrders/{id}"]
+  - area: properties
+    change: The gas status field noGas now returns false for Sales properties, since
+      gas certificates do not apply to sales.
+    endpoints: ["GET /properties/{id}/utilities"]
+- period: '2026-06'
+  breaking: false
+  highlights:
+  - area: tenancies
+    change: Links to occupier contact records are returned on a tenancy (occupierContacts),
+      where the occupier has a contact record.
+    endpoints: ["GET /tenancies/{id}"]
+  - area: tenancies
+    change: endDate validation removed — periodic tenancies can be created without
+      an end date.
+    endpoints: [POST /tenancies]
+  - area: tenancies
+    change: Meter readings and last-read dates can be updated on finished tenancies
+      (gas, electricity, water).
+    endpoints: ["PATCH /tenancies/{id}"]
+  - area: tenancies
+    change: daysInArrears is now visible when retrieving tenancies.
+    endpoints: [GET /tenancies, "GET /tenancies/{id}"]
+  - area: properties
+    change: EPC certificates can be posted on sales properties.
+    endpoints: ["POST /properties/{id}/certificates"]
+  - area: applicants
+    change: Applicant attributes part-furnished and unfurnished now mirror the CRM
+      selection.
+  - area: contacts
+    change: landlordDetails can be embedded when retrieving all contacts, for Making
+      Tax Digital visibility across contacts.
+    endpoints: [GET /contacts]
+- period: '2026-05'
+  breaking: false
+  highlights:
+  - area: enquiries
+    change: createdPropertyId added to property enquiries; enquiryType accepts multiple
+      values (salesApplicant, lettingsApplicant, salesProperty, lettingsProperty);
+      the assigned negotiatorId can be read and updated.
+    endpoints: [GET /enquiries, "GET /enquiries/{id}", "PATCH /enquiries/{id}"]
+  - area: tenancies
+    change: Rent reviews now support metadata (flexible key-value storage) on GET,
+      POST and PATCH.
+    endpoints: ["GET /tenancies/{id}/rentReviews", "POST /tenancies/{id}/rentReviews", "PATCH /tenancies/{id}/rentReviews/{rentReviewId}"]
+  - area: tenancies
+    change: Notice Management dates and reasons for landlords and tenants can be retrieved
+      and updated.
+    endpoints: ["GET /tenancies/{id}/noticeManagement", "PATCH /tenancies/{id}/noticeManagement"]
+  - area: tenancies
+    change: Letting and management fee type, amount and frequency are exposed on tenancy
+      extensions.
+    endpoints: ["GET /tenancies/{id}/extensions", "GET /tenancies/{id}/extensions/{extensionId}"]
+  - area: companies
+    change: Company accreditation details and expiry dates can be updated.
+    endpoints: ["PATCH /companies/{id}/accreditations/{type}"]
+- period: '2026-04'
+  breaking: false
+  highlights:
+  - area: works orders
+    change: Latest works order field dates can be retrieved, created and updated.
+    endpoints: [GET /worksOrders, POST /worksOrders, "PATCH /worksOrders/{id}"]
+- period: '2026-03'
+  breaking: false
+  highlights: []
+- period: '2026-02'
+  breaking: false
+  highlights: []
+- period: '2025-12'
+  breaking: false
+  highlights: []
+- period: '2025-11'
+  breaking: false
+  highlights: []
+- period: '2025-10'
+  breaking: false
+  highlights: []
+- period: '2025-08'
+  breaking: false
+  highlights: []
+- period: '2025-06'
+  breaking: false
+  highlights: []
+- period: '2025-04'
+  breaking: false
+  highlights: []
+- period: '2025-02'
+  breaking: false
+  highlights: []
+entries_note: >-
+  Sections dated 2026-03 and earlier are present on the live page with full
+  detail; only the four most recent months are transcribed here, per the
+  recent-window rule. Everything from 2020-10-10 forward remains on the source
+  page.
+observations:
+- One API version in nearly six years — every change captured here is additive.
+- Tenancies and works orders are the two areas under most active development
+  through 2026, consistent with lettings/property-management being where UK
+  agency software is currently competing.
+- Making Tax Digital plumbing (landlordDetails, contacts.landlorddetails.updated)
+  appears across both the changelog and the webhook catalog.

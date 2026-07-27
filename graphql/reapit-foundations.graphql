@@ -1,0 +1,1944 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+enum ApplicantQueryEmbed {
+  appointments
+  areas
+  department
+  documents
+  negotiators
+  offers
+  offices
+  solicitor
+  source
+}
+
+enum AppointmentQueryEmbed {
+  negotiators
+  offices
+  organiser
+  property
+  type
+}
+
+enum CompanyQueryEmbed {
+  companyTypes
+}
+
+enum ConfigurationType {
+  appointmentTypes
+  companyTypes
+  identityDocumentTypes
+  documentTypes
+  journalEntryTypes
+  followUpResponses
+  sellingReasons
+  supplierTypes
+  taskTypes
+  tenancyTypes
+  vendorTypes
+  worksOrderTypes
+  keyTypes
+}
+
+enum ContactQueryEmbed {
+  documents
+  identityChecks
+  negotiators
+  offices
+  source
+}
+
+enum ConveyancingQueryEmbed {
+  buyerSolicitor
+  offer
+  property
+  vendor
+  vendorSolicitor
+}
+
+enum DocumentQueryEmbed {
+  documentType
+}
+
+enum IdentityCheckQueryEmbed {
+  contact
+  document1
+  document2
+  documentType1
+  documentType2
+}
+
+enum KeyEmbed {
+  movements
+}
+
+enum KeyStatus {
+  checkedIn
+  checkedOut
+  noLongerHeld
+}
+
+enum LandlordQueryEmbed {
+  appointments
+  documents
+  office
+  properties
+  solicitor
+  source
+}
+
+enum NegotiatorQueryEmbed {
+  office
+}
+
+enum OfferQueryEmbed {
+  applicant
+  conveyancing
+  property
+  negotiator
+}
+
+enum OfficeQueryEmbed {
+  negotiators
+}
+
+enum PropertyImageQueryEmbed {
+  property
+}
+
+enum PropertyQueryEmbed {
+  appointments
+  area
+  department
+  documents
+  images
+  landlord
+  negotiator
+  offers
+  tenancies
+  vendor
+  offices
+}
+
+enum TaskQueryEmbed {
+  applicant
+  contact
+  landlord
+  property
+  tenancy
+  type
+}
+
+enum TenancyQueryEmbed {
+  appointments
+  applicant
+  documents
+  negotiator
+  property
+  source
+  tasks
+  type
+}
+
+enum VendorQueryEmbed {
+  negotiator
+  offices
+  property
+  sellingReason
+  solicitor
+  source
+  type
+}
+
+enum WorksOrdersEmbed {
+  company
+  documents
+  negotiator
+  property
+  tenancy
+  type
+}
+
+enum WorksOrdersStatus {
+  pendingApproval
+  pendingQuote
+  raised
+  raisedToChase
+  landlordToComplete
+  complete
+  cancelled
+}
+
+input AddressInput {
+  buildingName: String
+  buildingNumber: String
+  line1: String
+  line2: String
+  line3: String
+  line4: String
+  postcode: String
+  countryId: String
+  geolocation: AddressInputGeolocationInput
+}
+
+input AddressInputGeolocationInput {
+  latitude: Float
+  longitude: Float
+}
+
+input ApplicantAddressInput {
+  buildingName: String
+  buildingNumber: String
+  line1: String
+  line2: String
+  line3: String
+  line4: String
+  postcode: String
+  countryId: String
+}
+
+input ApplicantBuyingInput {
+  priceFrom: Int
+  priceTo: Int
+}
+
+input ApplicantExternalAreaInput {
+  type: String
+  amountFrom: Int
+  amountTo: Int
+}
+
+input ApplicantInternalAreaInput {
+  type: String
+  amount: Int
+}
+
+input ApplicantRelateInput {
+  associatedId: String
+  associatedType: String
+}
+
+input ApplicantRentingInput {
+  moveDate: String
+  term: String
+  rentFrom: Int
+  rentTo: Int
+  rentFrequency: String
+  furnishing: [String]
+}
+
+input ApplicantSourceInput {
+  id: String
+  type: String
+}
+
+input AppointmentModelRecurrenceInput {
+  interval: Int
+  type: String
+  until: String
+}
+
+input CompanyModelAddressInput {
+  type: String
+  buildingName: String
+  buildingNumber: String
+  line1: String
+  line2: String
+  line3: String
+  line4: String
+  postcode: String
+  countryId: String
+}
+
+input ContactModelAddressInput {
+  type: String
+  buildingName: String
+  buildingNumber: String
+  line1: String
+  line2: String
+  line3: String
+  line4: String
+  postcode: String
+  countryId: String
+}
+
+input ContactModelSourceInput {
+  id: String
+  type: String
+}
+
+input CreateAppointmentModelAttendeeInput {
+  id: String
+  type: String
+}
+
+input CreateLandlordRelatedModel {
+  associatedId: String
+  associatedType: String
+}
+
+input CreatePropertyRoomModelInput {
+  name: String
+  dimensions: String
+  description: String
+}
+
+input CreateTenancyRequestModelSource {
+  id: String
+  type: String
+}
+
+input EnquiryAddressInput {
+  buildingName: String
+  buildingNumber: String
+  line1: String
+  line2: String
+  line3: String
+  line4: String
+  postcode: String
+  countryId: String
+}
+
+input EpcInput {
+  exempt: Boolean
+  eer: Int
+  eerPotential: Int
+  eir: Int
+  eirPotential: Int
+}
+
+input ExternalAreaInput {
+  type: String
+  min: Float
+  max: Float
+}
+
+input IdentityCheckModelIdentityDocumentInput {
+  typeId: String
+  expiry: String
+  details: String
+  fileData: String
+  name: String
+}
+
+input IndividualKeyModelInput {
+  description: String
+  name: String!
+}
+
+input InputWorksOrderItem {
+  notes: String!
+  chargeTo: String!
+  estimate: Float
+  estimateType: String
+  netAmount: Float
+  vatAmount: Float
+}
+
+input InternalAreaInput {
+  type: String
+  min: Float
+  max: Float
+}
+
+input KeyModelInput {
+  number: String!
+  typeId: String!
+  officeId: String!
+  keysInSet: [IndividualKeyModelInput]
+}
+
+input KeyMovementModelInput {
+  checkInRequired: Boolean!
+  checkOutToId: String!
+  checkOutToType: String!
+  checkOutNegotiatorId: String!
+}
+
+input LandLordSourceInput {
+  id: String
+  type: String
+}
+
+input OfficeModelAddressInput {
+  buildingName: String
+  buildingNumber: String
+  line1: String
+  line2: String
+  line3: String
+  line4: String
+  postcode: String
+  countryId: String
+}
+
+input SellingInput {
+  instructed: String
+  price: Int
+  qualifier: String
+  status: String
+  completed: String
+  exchanged: String
+  tenure: SellingInputTenureInput
+}
+
+input SellingInputTenureInput {
+  type: String
+  expiry: String
+}
+
+input UpdateAppointmentModelAttendeeInput {
+  id: String
+  type: String
+  confirmed: Boolean
+}
+
+input UpdateAppointmentModelFollowUpInput {
+  responseId: String
+  notes: String
+}
+
+input VendorSourceInput {
+  id: String
+  type: String
+}
+
+input lettingInput {
+  instructed: String
+  availableFrom: String
+  availableTo: String
+  rent: Float
+  rentFrequency: String
+  furnishing: [String!]
+  agentRole: String
+  term: String
+  status: String
+}
+
+type ApplicantAddress {
+  buildingName: String
+  buildingNumber: String
+  line1: String
+  line2: String
+  line3: String
+  line4: String
+  postcode: String
+  countryId: String
+}
+
+type ApplicantBuying {
+  priceFrom: Int
+  priceTo: Int
+}
+
+type ApplicantContactRelationshipModel {
+  id: String
+  created: String
+  modified: String
+  applicantId: String
+  associatedType: String
+  associatedId: String
+  isMain: Boolean
+  _links: JSON
+  _embedded: JSON
+}
+
+type ApplicantExternalArea {
+  type: String
+  amountFrom: Int
+  amountTo: Int
+}
+
+type ApplicantInternalArea {
+  type: String
+  amount: Int
+}
+
+type ApplicantModel {
+  id: String
+  created: String
+  modified: String
+  marketingMode: String
+  currency: String
+  active: Boolean
+  notes: String
+  lastCall: String
+  nextCall: String
+  departmentId: String
+  solicitorId: String
+  type: [String]
+  style: [String]
+  situation: [String]
+  parking: [String]
+  age: [String]
+  locality: [String]
+  bedroomsMin: Int
+  bedroomsMax: Int
+  receptionsMin: Int
+  receptionsMax: Int
+  bathroomsMin: Int
+  bathroomsMax: Int
+  parkingSpacesMin: Int
+  parkingSpacesMax: Int
+  locationType: String
+  locationOptions: [String]
+  buying: ApplicantBuying
+  renting: ApplicantRenting
+  externalArea: ApplicantExternalArea
+  internalArea: ApplicantInternalArea
+  source: ApplicantSource
+  officeIds: [String]
+  negotiatorIds: [String]
+  related: [ApplicantRelate]
+  metadata: JSON
+  _eTag: String
+  _links: JSON
+  _embedded: EmbeddedApplicantModel
+}
+
+type ApplicantRelate {
+  id: String
+  name: String
+  type: String
+  homePhone: String
+  workPhone: String
+  mobilePhone: String
+  email: String
+  primaryAddress: ApplicantAddress
+}
+
+type ApplicantRenting {
+  moveDate: String
+  term: String
+  rentFrom: Float
+  rentTo: Float
+  rentFrequency: String
+  furnishing: [String]
+}
+
+type ApplicantSource {
+  id: String
+  type: String
+}
+
+type AppointmentAttendeeModel {
+  id: String
+  type: String
+  contacts: [AppointmentContactModel!]
+}
+
+type AppointmentContactModel {
+  id: String
+  name: String
+  homePhone: String
+  workPhone: String
+  mobilePhone: String
+  email: String
+}
+
+type AppointmentModel {
+  id: String
+  created: String
+  modified: String
+  start: String
+  end: String
+  typeId: String
+  appointmentType: ListItemModel
+  description: String
+  recurring: Boolean
+  cancelled: Boolean
+  followUp: AppointmentModelFollowUp
+  propertyId: String
+  virtual: Boolean
+  property: PropertyModel
+  organiserId: String
+  negotiatorIds: [String!]
+  negotiators: [NegotiatorModel]
+  officeIds: [String!]
+  offices: [OfficeModel]
+  attendee: AppointmentAttendeeModel
+  accompanied: Boolean
+  negotiatorConfirmed: Boolean
+  attendeeConfirmed: Boolean
+  propertyConfirmed: Boolean
+  metadata: JSON
+  _eTag: String
+  _links: JSON
+  _embedded: EmbeddedAppointmentModel
+}
+
+type AppointmentModelFollowUp {
+  due: String
+  responseId: String
+  notes: String
+}
+
+type AreaModel {
+  id: String
+  created: String
+  modified: String
+  name: String
+  active: Boolean
+  type: String
+  area: [String!]
+  departmentIds: [String!]
+  officeIds: [String!]
+  _eTag: String
+  _links: JSON
+  _embedded: JSON
+}
+
+"""Representation of a company"""
+type CompanyModel {
+  id: String
+  created: String
+  modified: String
+  name: String
+  branch: String
+  notes: String
+  active: Boolean
+  vatRegistered: Boolean
+  typeIds: [String!]
+  supplierTypeId: String
+  workPhone: String
+  mobilePhone: String
+  email: String
+  address: CompanyModel_address
+  metadata: JSON
+  _eTag: String
+  _links: JSON
+  _embedded: EmbeddedCompanyRoleModel
+}
+
+type CompanyModelPagedResult {
+  _embedded: [CompanyModel!]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalPageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type CompanyModel_address {
+  buildingName: String
+  buildingNumber: String
+  line1: String
+  line2: String
+  line3: String
+  line4: String
+  postcode: String
+  country: String
+}
+
+type CompanyRoleModel {
+  id: String
+  created: String
+  modified: String
+  companyId: String
+  associatedType: String
+  associatedId: String
+  _links: JSON
+  _embedded: JSON
+}
+
+type CompanyRoleModelPagedResult {
+  _embedded: [CompanyRoleModel!]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalPageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type ContactModel {
+  id: String
+  created: String
+  modified: String
+  title: String
+  forename: String
+  surname: String
+  dateOfBirth: String
+  active: Boolean
+  marketingConsent: String
+  identityCheck: String
+  source: ContactModelSource
+  homePhone: String
+  workPhone: String
+  mobilePhone: String
+  email: String
+  archivedOn: String
+  fromArchive: Boolean
+  primaryAddress: ContactModelAddress
+  secondaryAddress: ContactModelAddress
+  workAddress: ContactModelAddress
+  officeIds: [String!]
+  negotiatorIds: [String!]
+  communicationPreferenceLetter: Boolean
+  communicationPreferenceEmail: Boolean
+  communicationPreferencePhone: Boolean
+  communicationPreferenceSMS: Boolean
+  metadata: JSON
+  _eTag: String
+  _links: JSON
+  _embedded: EmbeddedContactModel
+}
+
+type ContactModelAddress {
+  type: String
+  buildingName: String
+  buildingNumber: String
+  line1: String
+  line2: String
+  line3: String
+  line4: String
+  postcode: String
+  countryId: String
+}
+
+type ContactModelSource {
+  id: String
+  type: String
+}
+
+"""Representation of an offers sales progression information"""
+type ConveyancingModel {
+  id: String
+  created: String
+  modified: String
+  isExternal: Boolean
+  propertyId: String
+  propertyAddress: String
+  vendor: String
+  vendorId: String
+  vendorSolicitorId: String
+  buyer: String
+  buyerId: String
+  buyerSolicitorId: String
+  externalAgent: String
+  externalAgentId: String
+  upwardChainId: String
+  downwardChainId: String
+  fixturesAndFittingsCompleted: String
+  deedsRequested: String
+  deedsReceived: String
+  enquiriesSent: String
+  enquiriesAnswered: String
+  searchesPaid: String
+  searchesApplied: String
+  searchesReceived: String
+  contractSent: String
+  contractReceived: String
+  contractApproved: String
+  contractVendorSigned: String
+  contractBuyerSigned: String
+  mortgageRequired: String
+  mortgageLoanPercentage: Int
+  mortgageSubmitted: String
+  mortgageOfferReceived: String
+  mortgageLenderId: String
+  mortgageBrokerId: String
+  mortgageSurveyDate: String
+  mortgageSurveyorId: String
+  additionalSurveyRequired: String
+  additionalSurveyDate: String
+  additionalSurveyorId: String
+  exchangedVendor: String
+  exchangedBuyer: String
+  completion: String
+  _eTag: String
+  metadata: JSON
+  _links: JSON
+  _embedded: EmbeddedConveyancingModel
+}
+
+type ConveyancingModelPagedResult {
+  _embedded: [ConveyancingModel!]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalPageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type DepartmentModel {
+  id: String
+  created: String
+  modified: String
+  name: String
+  typeOptions: [String!]
+  styleOptions: [String!]
+  situationOptions: [String!]
+  parkingOptions: [String!]
+  ageOptions: [String!]
+  localityOptions: [String!]
+  _eTag: String
+  _links: JSON
+  _embedded: JSON
+}
+
+type DepartmentModelPagedResult {
+  _embedded: [DepartmentModel!]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalPageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type DocumentModel {
+  id: String
+  created: String
+  modified: String
+  associatedType: String
+  associatedId: String
+  typeId: String
+  name: String
+  _eTag: JSON
+  _links: JSON
+  _embedded: EmbeddedDocumentModel
+}
+
+type DocumentType {
+  id: String
+  value: String
+}
+
+type EmbeddedApplicantModel {
+  appointments: [AppointmentModel]
+  areas: [AreaModel]
+  department: DepartmentModel
+  documents: [DocumentModel]
+  negotiators: [NegotiatorModel]
+  offers: [OfferModel]
+  offices: [OfficeModel]
+  solicitor: CompanyModel
+  source: SourceModel
+}
+
+type EmbeddedAppointmentModel {
+  negotiators: [NegotiatorModel]
+  offices: [OfficeModel]
+  organiser: NegotiatorModel
+  property: PropertyModel
+  type: ListItemModel
+}
+
+type EmbeddedCompanyRoleModel {
+  companyTypes: [ListItemModel]
+}
+
+type EmbeddedContactModel {
+  documents: [DocumentModel]
+  identityChecks: [IdentityCheckModel]
+  negotiators: [NegotiatorModel]
+  offices: [OfficeModel]
+  source: SourceModel
+}
+
+type EmbeddedConveyancingModel {
+  buyerSolicitor: CompanyModel
+  offer: OfferModel
+  property: PropertyModel
+  vendor: VendorModel
+  vendorSolicitor: CompanyModel
+}
+
+type EmbeddedDocumentModel {
+  documentType: [DocumentType]
+}
+
+type EmbeddedIdentityCheckModel {
+  contact: ContactModel
+  document1: DocumentModel
+  document2: DocumentModel
+  documentType1: ListItemModel
+  documentType2: ListItemModel
+}
+
+type EmbeddedLandlordModel {
+  appointments: [AppointmentModel]
+  documents: [DocumentModel]
+  office: OfficeModel
+  properties: [PropertyModel]
+  solicitor: CompanyModel
+  source: SourceModel
+}
+
+type EmbeddedNegotiatorModel {
+  office: OfficeModel
+}
+
+type EmbeddedOfferModel {
+  applicant: ApplicantModel
+  conveyancing: ConveyancingModel
+  property: PropertyModel
+  negotiator: NegotiatorModel
+}
+
+type EmbeddedOfficeModel {
+  negotiators: [NegotiatorModel]
+}
+
+type EmbeddedPropertyImageModel {
+  property: PropertyModel
+}
+
+type EmbeddedPropertyModel {
+  appointments: [AppointmentModel]
+  area: AreaModel
+  department: DepartmentModel
+  documents: [DocumentModel]
+  images: [PropertyImageModel]
+  landlord: LandlordModel
+  negotiator: NegotiatorModel
+  offers: [OfferModel]
+  offices: [OfficeModel]
+  tenancies: [TenancyModel]
+  vendor: VendorModel
+}
+
+type EmbeddedTaskModel {
+  applicant: ApplicantModel
+  contact: ContactModel
+  landlord: LandlordModel
+  property: PropertyModel
+  tenancy: TenancyModel
+  type: ListItemModel
+}
+
+type EmbeddedTenancyModel {
+  appointments: [AppointmentModel]
+  applicant: ApplicantModel
+  documents: [DocumentModel]
+  negotiator: NegotiatorModel
+  property: PropertyModel
+  source: SourceModel
+  tasks: [TaskModel]
+  type: ListItemModel
+}
+
+type EmbeddedVendorModel {
+  negotiator: NegotiatorModel
+  offices: [OfficeModel]
+  property: PropertyModel
+  sellingReason: JSON
+  solicitor: CompanyModel
+  source: SourceModel
+  type: ListItemModel
+}
+
+type EnquiryAddress {
+  buildingName: String
+  buildingNumber: String
+  line1: String
+  line2: String
+  line3: String
+  line4: String
+  postcode: String
+  countryId: String
+}
+
+type EnquiryModel {
+  id: Int
+  created: String
+  modified: String
+  title: String
+  forename: String
+  surname: String
+  enquiryType: String
+  message: String
+  status: String
+  marketingConsent: String
+  position: String
+  officeId: String
+  sourceName: String
+  homePhone: String
+  workPhone: String
+  mobilePhone: String
+  email: String
+  address: EnquiryAddress
+  propertyIds: [String]
+  _links: JSON
+  _embedded: JSON
+}
+
+type IdentityCheckModel {
+  id: String
+  contactId: String
+  created: String
+  modified: String
+  checkDate: String
+  status: String
+  negotiatorId: String
+  identityDocument1: IdentityCheckModelIdentityDocument
+  identityDocument2: IdentityCheckModelIdentityDocument
+  metadata: JSON
+  _eTag: String
+  _links: JSON
+  _embedded: EmbeddedIdentityCheckModel
+}
+
+type IdentityCheckModelIdentityDocument {
+  documentId: String
+  typeId: String
+  expiry: String
+  details: String
+  fileData: String
+  fileUrl: String
+  name: String
+}
+
+type IndividualKeyModel {
+  description: String
+  name: String
+}
+
+type JournalEntryModel {
+  created: String
+  propertyId: String
+  associatedType: String
+  associatedId: String
+  typeId: String
+  negotiatorId: String
+  description: String
+  _links: JSON
+  _embedded: JSON
+}
+
+type JournalEntryModelPagedResult {
+  _embedded: [JournalEntryModel!]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalPageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type KeyModel {
+  id: ID!
+  created: String
+  modified: String
+  number: String
+  type: KeyType
+  office: OfficeModel
+  status: KeyStatus
+  keysInSet: [IndividualKeyModel]
+  movements: [KeyMovementModel]
+}
+
+type KeyMovementModel {
+  id: ID!
+  created: String
+  modified: String
+  checkOutToContact: ContactModel
+  checkOutToNegotiator: NegotiatorModel
+  checkOutAt: String
+  checkOutNegotiator: NegotiatorModel
+  checkInAt: String
+  checkInNegotiator: NegotiatorModel
+}
+
+type KeyType {
+  value: String
+  id: String
+}
+
+type LandlordModel {
+  id: String
+  created: String
+  modified: String
+  active: Boolean
+  solicitorId: String
+  officeId: String
+  source: LandlordSourceModel
+  related: [LandlordRelatedModel!]
+  metadata: JSON
+  _eTag: String
+  _links: JSON
+  _embedded: EmbeddedLandlordModel
+}
+
+type LandlordRelatedModel {
+  id: String
+  name: String
+  title: String
+  forename: String
+  surname: String
+  type: String
+  homePhone: String
+  workPhone: String
+  mobilePhone: String
+  email: String
+  primaryAddress: LandlordRelatedPrimaryAddressModel
+}
+
+type LandlordRelatedPrimaryAddressModel {
+  buildingName: String
+  buildingNumber: String
+  line1: String
+  line2: String
+  line3: String
+  line4: String
+  postcode: String
+  countryId: String
+}
+
+type LandlordRelationshipModel {
+  id: String
+  landlordId: String
+  created: String
+  modified: String
+  associatedType: String
+  associatedId: String
+  isMain: Boolean
+  _links: JSON
+  _embedded: JSON
+}
+
+type LandlordSourceModel {
+  id: String
+  type: String
+}
+
+type ListItemModel {
+  id: String
+  value: String
+}
+
+type Mutation {
+  CreateApplicant(marketingMode: String, active: Boolean, notes: String, lastCall: String, nextCall: String, departmentId: String, solicitorId: String, type: [String], style: [String], situation: [String], parking: [String], age: [String], locality: [String], bedroomsMin: Int, bedroomsMax: Int, receptionsMin: Int, receptionsMax: Int, bathroomsMin: Int, bathroomsMax: Int, parkingSpacesMin: Int, parkingSpacesMax: Int, locationType: String, locationOptions: [String], buying: ApplicantBuyingInput, renting: ApplicantRentingInput, externalArea: ApplicantExternalAreaInput, internalArea: ApplicantInternalAreaInput, source: ApplicantSourceInput, officeIds: [String], negotiatorIds: [String], related: [ApplicantRelateInput], metadata: JSON): ApplicantModel!
+  UpdateApplicant(marketingMode: String, active: Boolean, notes: String, lastCall: String, nextCall: String, departmentId: String, solicitorId: String, type: [String], style: [String], situation: [String], parking: [String], age: [String], locality: [String], bedroomsMin: Int, bedroomsMax: Int, receptionsMin: Int, receptionsMax: Int, bathroomsMin: Int, bathroomsMax: Int, parkingSpacesMin: Int, parkingSpacesMax: Int, locationType: String, locationOptions: [String], buying: ApplicantBuyingInput, renting: ApplicantRentingInput, externalArea: ApplicantExternalAreaInput, internalArea: ApplicantInternalAreaInput, source: ApplicantSourceInput, officeIds: [String], negotiatorIds: [String], metadata: JSON, id: String!, _eTag: String!): ApplicantModel!
+  CreateApplicantRelationship(id: String!, associatedId: String!, associatedType: String!, isMain: Boolean!): ApplicantContactRelationshipModel
+  DeleteApplicantRelationship(id: String!, relationshipId: String!): String!
+  CreateAppointment(start: String, end: String, followUpOn: String, typeId: String, description: String, organiserId: String, negotiatorIds: [String!], officeIds: [String!], propertyId: String, accompanied: Boolean, negotiatorConfirmed: Boolean, attendeeConfirmed: Boolean, propertyConfirmed: Boolean, recurrence: AppointmentModelRecurrenceInput, metadata: JSON, attendee: CreateAppointmentModelAttendeeInput): AppointmentModel!
+  UpdateAppointment(id: String!, start: String, end: String, followUpOn: String, typeId: String, description: String, organiserId: String, negotiatorIds: [String!], officeIds: [String!], propertyId: String, accompanied: Boolean, negotiatorConfirmed: Boolean, attendeeConfirmed: Boolean, propertyConfirmed: Boolean, recurrence: AppointmentModelRecurrenceInput, metadata: JSON, attendee: UpdateAppointmentModelAttendeeInput, cancelled: Boolean, followUp: UpdateAppointmentModelFollowUpInput, _eTag: String!): AppointmentModel!
+  CreateArea(name: String, type: String, area: [String!], departmentIds: [String!], officeIds: [String!], parentId: String): JSON!
+  UpdateArea(name: String, area: [String!], departmentIds: [String!], officeIds: [String!], id: String!, _eTag: String!): AreaModel!
+  UpdateCompany(_eTag: String!, id: String!, name: String, branch: String, notes: String, active: Boolean, vatRegistered: Boolean, typeIds: [String!], supplierTypeId: String, workPhone: String, mobilePhone: String, email: String, address: CompanyModelAddressInput, metadata: JSON): CompanyModel!
+  CreateCompany(name: String, branch: String, notes: String, active: Boolean, vatRegistered: Boolean, typeIds: [String!], supplierTypeId: String, workPhone: String, mobilePhone: String, email: String, address: CompanyModelAddressInput, metadata: JSON): CompanyModel!
+  CreateContact(title: String, forename: String, surname: String, dateOfBirth: String, active: Boolean, marketingConsent: String!, source: ContactModelSourceInput, homePhone: String, workPhone: String, mobilePhone: String, email: String, officeIds: [String!]!, negotiatorIds: [String!]!, primaryAddress: ContactModelAddressInput, secondaryAddress: ContactModelAddressInput, workAddress: ContactModelAddressInput, metadata: JSON): ContactModel!
+  UpdateContact(id: String!, _eTag: String!, title: String, forename: String, surname: String, dateOfBirth: String, active: Boolean, marketingConsent: String, source: ContactModelSourceInput, homePhone: String, workPhone: String, mobilePhone: String, email: String, officeIds: [String!], negotiatorIds: [String!], primaryAddress: ContactModelAddressInput, secondaryAddress: ContactModelAddressInput, workAddress: ContactModelAddressInput, metadata: JSON): ContactModel!
+  UpdateConveyancing(_eTag: String!, id: String!, vendorSolicitorId: String, buyerSolicitorId: String, fixturesAndFittingsCompleted: String, deedsRequested: String, deedsReceived: String, enquiriesSent: String, enquiriesAnswered: String, searchesPaid: String, searchesApplied: String, searchesReceived: String, contractSent: String, contractReceived: String, contractApproved: String, contractVendorSigned: String, contractBuyerSigned: String, mortgageRequired: String, mortgageLoanPercentage: Int, mortgageSubmitted: String, mortgageOfferReceived: String, mortgageLenderId: String, mortgageBrokerId: String, mortgageSurveyDate: String, mortgageSurveyorId: String, additionalSurveyRequired: String, additionalSurveyDate: String, additionalSurveyorId: String, exchangedVendor: String, exchangedBuyer: String, completion: String, metadata: JSON): ConveyancingModel!
+  CreateDownwardLinkModel(id: String!, offerId: String, propertyAddress: String, agent: String, buyer: String, buyerSolicitorId: String): ConveyancingModel!
+  DeleteDownwardLinkModel(id: String!): String!
+  CreateUpwardLinkModel(id: String!, offerId: String, propertyAddress: String, agent: String, vendor: String, vendorSolicitorId: String): ConveyancingModel!
+  DeleteUpwardLinkModel(id: String!): String!
+  CreateDocument(associatedType: String, associatedId: String, typeId: String, name: String, fileData: String): DocumentModel!
+  UpdateDocument(id: String!, _eTag: String!, typeId: String, name: String): DocumentModel!
+  DeleteDocument(id: String!): String!
+  CreateEnquiry(title: String, forename: String, surname: String, enquiryType: String, message: String, status: String, marketingConsent: String, position: String, officeId: String, sourceName: String, homePhone: String, workPhone: String, mobilePhone: String, email: String, address: EnquiryAddressInput, propertyIds: [String]): EnquiryModel!
+  CreateIdentityCheck(contactId: String, checkDate: String, status: String, negotiatorId: String, identityDocument1: IdentityCheckModelIdentityDocumentInput, identityDocument2: IdentityCheckModelIdentityDocumentInput, metadata: JSON): JSON!
+  UpdateIdentityCheck(id: String!, _eTag: String!, checkDate: String, status: String, negotiatorId: String, identityDocument1: IdentityCheckModelIdentityDocumentInput, identityDocument2: IdentityCheckModelIdentityDocumentInput, metadata: JSON): IdentityCheckModel!
+  CreateJournalEntry(propertyId: String, associatedType: String, associatedId: String, description: String!): Boolean!
+  CreateKey(propertyId: ID!, key: KeyModelInput): KeyModel
+  CreateKeyMovement(propertyId: ID!, keyId: ID!, movement: KeyMovementModelInput): KeyMovementModel
+  UpdateKeyMovement(propertyId: ID!, keyId: ID!, movementId: ID!, checkInNegotiatorId: String!): KeyMovementModel
+  UpdateLandlord(id: String!, _eTag: String!, active: Boolean, solicitorId: String, officeId: String, source: LandLordSourceInput, metadata: JSON): LandlordModel!
+  CreateLandlord(active: Boolean, solicitorId: String, officeId: String, source: LandLordSourceInput, related: [CreateLandlordRelatedModel!], metadata: JSON): LandlordModel!
+  CreateLandlordRelationship(id: String!, associatedId: String, associatedType: String, isMain: Boolean): LandlordRelationshipModel!
+  DeleteLandlordRelationship(id: String!, relationshipId: String!): String
+  CreateNegotiator(name: String, jobTitle: String, active: Boolean, officeId: String, workPhone: String, mobilePhone: String, email: String, metadata: JSON): NegotiatorModel!
+  UpdateNegotiator(id: String!, _eTag: String!, name: String, jobTitle: String, active: Boolean, workPhone: String, mobilePhone: String, email: String, metadata: JSON): NegotiatorModel!
+  CreateOffer(applicantId: String, propertyId: String, negotiatorId: String, date: String, amount: Float, status: String, inclusions: String, exclusions: String, conditions: String, metadata: JSON): OfferModel!
+  UpdateOffer(id: String!, _eTag: String!, negotiatorId: String, date: String, amount: Float, status: String, inclusions: String, exclusions: String, conditions: String, metadata: JSON): OfferModel!
+  CreateOffice(name: String, manager: String, address: OfficeModelAddressInput, workPhone: String, email: String, metadata: JSON): OfficeModel!
+  UpdateOffice(id: String!, _eTag: String!, name: String, manager: String, address: OfficeModelAddressInput, workPhone: String, email: String, metadata: JSON): OfficeModel!
+  CreateProperty(marketingMode: String, departmentId: String, strapline: String, description: String, summary: String, address: AddressInput, bedrooms: Int, receptions: Int, notes: String, bathrooms: Int, parkingSpaces: Int, councilTax: String, internetAdvertising: Boolean, viewingArrangements: String, videoUrl: String, videoCaption: String, epc: EpcInput, externalArea: ExternalAreaInput, internalArea: InternalAreaInput, selling: SellingInput, letting: lettingInput, type: [String!], style: [String!], situation: [String!], parking: [String!], age: [String!], locality: [String!], rooms: [CreatePropertyRoomModelInput!], negotiatorId: String, officeIds: [String!], areaId: String, metadata: JSON): PropertyModel!
+  UpdateProperty(id: String!, _eTag: String!, strapline: String, marketingMode: String, departmentId: String, description: String, summary: String, address: AddressInput, bedrooms: Int, receptions: Int, bathrooms: Int, councilTax: String, notes: String, internetAdvertising: Boolean, viewingArrangements: String, videoUrl: String, videoCaption: String, parkingSpaces: Int, epc: EpcInput, externalArea: ExternalAreaInput, internalArea: InternalAreaInput, selling: SellingInput, letting: lettingInput, type: [String!], style: [String!], situation: [String!], parking: [String!], age: [String!], locality: [String!], negotiatorId: String, officeIds: [String!], rooms: [CreatePropertyRoomModelInput!], areaId: String, metadata: JSON): PropertyModel!
+  CreatePropertyImage(data: String, propertyId: String, caption: String, type: String): PropertyImageModel!
+  UpdatePropertyImage(_eTag: String!, id: String!, caption: String, type: String): PropertyImageModel!
+  DeletePropertyImage(id: String!): Boolean!
+  CreateSource(name: String, type: String, departmentIds: [String!], officeIds: [String!]): SourceModel!
+  UpdateSource(name: String, type: String, departmentIds: [String!], officeIds: [String!], id: String!, _eTag: String!): SourceModel!
+  CreateTask(activates: String, completed: String, typeId: String, senderId: String, text: String, landlordId: String, propertyId: String, applicantId: String, tenancyId: String, contactId: String, recipientId: String, recipientType: String, metadata: JSON): TaskModel!
+  UpdateTask(_eTag: String!, id: String!, activates: String, completed: String, typeId: String, senderId: String, text: String, landlordId: String, propertyId: String, applicantId: String, tenancyId: String, contactId: String, recipientId: String, recipientType: String, metadata: JSON): TaskModel!
+  CreateTenancy(startDate: String, endDate: String, agentRole: String, rent: Int, rentFrequency: String, isPeriodic: Boolean, typeId: String, negotiatorId: String, propertyId: String, applicantId: String, source: CreateTenancyRequestModelSource): TenancyModel!
+  CreateTenancyCheck(id: String!, description: String, type: String, status: String): TenancyCheckModel!
+  DeleteTenancyCheck(id: String!, checkId: String!): Boolean!
+  UpdateTenancyCheck(id: String!, checkId: String!, status: String, _eTag: String!): TenancyCheckModel!
+  UpdateVendor(id: String!, _eTag: String!, nextCall: String, lastCall: String, typeId: String, sellingReasonId: String, solicitorId: String, source: VendorSourceInput, metadata: JSON): VendorModel!
+  CreateVendorRelationship(id: String!, associatedId: String, associatedType: String, isMain: Boolean): Boolean!
+  DeleteVendorRelationship(id: String!, relationshipId: String!): Boolean!
+  DeleteWorksOrderItem(itemId: String!, id: String!): Boolean
+  UpdateWorksOrderItem(notes: String, chargeTo: String, id: String!, itemId: String!, _eTag: String!, estimate: Float, estimateType: String, netAmount: Float, vatAmount: Float): WorksOrderItem!
+  CreateWorksOrderItem(notes: String!, chargeTo: String!, id: String!, estimate: Float, estimateType: String, netAmount: Float, vatAmount: Float): WorksOrderItem!
+  UpdateWorksOrder(propertyId: String, negotiatorId: String, typeId: String, status: String, description: String, reporter: String, companyId: String, tenancyId: String, booked: String, required: String, completed: String, metadata: JSON, _eTag: String!, id: String!): WorkOrder!
+  CreateWorksOrder(propertyId: String!, negotiatorId: String!, typeId: String!, status: String!, description: String!, reporter: String!, items: [InputWorksOrderItem!], companyId: String, tenancyId: String, booked: String, required: String, completed: String, metadata: JSON): WorkOrder!
+}
+
+type NegotiatorModel {
+  id: String
+  created: String
+  modified: String
+  name: String
+  jobTitle: String
+  active: Boolean
+  officeId: String
+  workPhone: String
+  mobilePhone: String
+  email: String
+  metadata: JSON
+  _eTag: String
+  _links: JSON
+  _embedded: EmbeddedNegotiatorModel
+}
+
+type OfferAddress {
+  buildingName: String
+  buildingNumber: String
+  line1: String
+  line2: String
+  line3: String
+  line4: String
+  postcode: String
+  countryId: String
+}
+
+type OfferModel {
+  id: String
+  created: String
+  modified: String
+  currency: String
+  applicantId: String
+  propertyId: String
+  OfferId: String
+  date: String
+  amount: Float
+  status: String
+  inclusions: String
+  exclusions: String
+  conditions: String
+  related: [OfferRelate]
+  metadata: JSON
+  _eTag: String
+  _links: JSON
+  _embedded: EmbeddedOfferModel
+}
+
+type OfferRelate {
+  id: String
+  name: String
+  title: String
+  forename: String
+  surname: String
+  type: String
+  homePhone: String
+  workPhone: String
+  mobilePhone: String
+  email: String
+  primaryAddress: OfferAddress
+}
+
+type OfficeModel {
+  id: String
+  created: String
+  modified: String
+  name: String
+  manager: String
+  address: OfficeModelAddress
+  workPhone: String
+  email: String
+  metadata: JSON
+  _eTag: String
+  _links: JSON
+  _embedded: EmbeddedOfficeModel
+}
+
+type OfficeModelAddress {
+  buildingName: String
+  buildingNumber: String
+  line1: String
+  line2: String
+  line3: String
+  line4: String
+  postcode: String
+  countryId: String
+}
+
+type PagedResultApplicantContactRelationshipModel {
+  _embedded: [ApplicantContactRelationshipModel]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type PagedResultApplicantModel {
+  _embedded: [ApplicantModel!]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type PagedResultAppointmentModel {
+  _embedded: [AppointmentModel!]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type PagedResultAreaModel {
+  _embedded: [AreaModel!]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type PagedResultContactModel {
+  _embedded: [ContactModel!]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type PagedResultDocumentModel {
+  _embedded: [DocumentModel!]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type PagedResultEnquiryModel {
+  _embedded: [EnquiryModel!]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type PagedResultIdentityCheckModel {
+  _embedded: [IdentityCheckModel!]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type PagedResultLandlordModel {
+  _embedded: [LandlordModel!]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalPageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type PagedResultLandlordRelationshipModel {
+  _embedded: [LandlordRelationshipModel!]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalPageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type PagedResultNegotiatorModel {
+  _embedded: [NegotiatorModel!]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type PagedResultOfferModel {
+  _embedded: [OfferModel!]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type PagedResultOfficeModel {
+  _embedded: [OfficeModel!]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type PagedResultPropertyImageModel {
+  _embedded: [PropertyImageModel!]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalPageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type PagedResultPropertyModel {
+  _embedded: [PropertyModel!]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type PagedResultSourceModel {
+  _embedded: [SourceModel!]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type PagedResultTaskModel {
+  _embedded: [TaskModel]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type PagedResultTenancies {
+  _embedded: [TenancyModel!]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalPageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type PagedResultTenancyChecks {
+  _embedded: [TenancyCheckModel!]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalPageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type PagedResultTenancyRelationships {
+  _embedded: [PagedResultTenancyRelationshipsEmbedded!]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalPageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type PagedResultTenancyRelationshipsEmbedded {
+  id: String
+  created: String
+  modified: String
+  tenancyId: String
+  associatedType: String
+  associatedId: String
+  isMain: Boolean
+  _links: JSON
+  _embedded: JSON
+}
+
+type PagedResultVendorModel {
+  _embedded: [VendorModel!]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type PagedResultVendorRelationshipModel {
+  _embedded: [VendorRelationship!]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type PagedResultWorksOrderItem {
+  _embedded: [WorksOrderItem!]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalPageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type PagedResultWorksOrders {
+  _embedded: [WorkOrder!]
+  pageNumber: Int
+  pageSize: Int
+  pageCount: Int
+  totalPageCount: Int
+  totalCount: Int
+  _links: JSON
+}
+
+type PropertyImageModel {
+  id: String
+  created: String
+  modified: String
+  propertyId: String
+  url: String
+  caption: String
+  type: String
+  order: Int
+  _eTag: String
+  _links: JSON
+  _embedded: EmbeddedPropertyImageModel
+}
+
+type PropertyModeLetting {
+  instructed: String
+  availableFrom: String
+  availableTo: String
+  rent: Float
+  rentFrequency: String
+  furnishing: [String!]
+  term: String
+  status: String
+  agentRole: String
+  landlordId: String
+  brochureId: String
+  managementFee: PropertyModelManagementFee
+  lettingFee: PropertyModelLettingFee
+}
+
+type PropertyModel {
+  id: String
+  created: String
+  modified: String
+  marketingMode: String
+  currency: String
+  alternateId: String
+  address: PropertyModelAddress
+  areaId: String
+  strapline: String
+  description: String
+  longDescription: String
+  summary: String
+  departmentId: String
+  negotiatorId: String
+  bedrooms: Int
+  receptions: Int
+  bathrooms: Int
+  councilTax: String
+  internetAdvertising: Boolean
+  viewingArrangements: String
+  videoUrl: String
+  videoCaption: String
+  video2Url: String
+  parkingSpaces: Int
+  video2Caption: String
+  notes: String
+  archivedOn: String
+  fromArchive: Boolean
+  externalArea: PropertyModelExternalArea
+  internalArea: PropertyModelInternalArea
+  epc: PropertyModelEpc
+  selling: PropertyModelSelling
+  letting: PropertyModeLetting
+  type: [String!]
+  style: [String!]
+  situation: [String!]
+  parking: [String!]
+  age: [String!]
+  locality: [String!]
+  rooms: [PropertyRoomModel!]
+  officeIds: [String!]
+  lostInstructionDate: String
+  lostInstructionNote: String
+  metadata: JSON
+  keys: [KeyModel]
+  _eTag: String
+  _links: JSON
+  _embedded: EmbeddedPropertyModel
+}
+
+type PropertyModelAddress {
+  buildingName: String
+  buildingNumber: String
+  line1: String
+  line2: String
+  line3: String
+  line4: String
+  postcode: String
+  countryId: String
+  geolocation: PropertyModelAddressGeolocation
+}
+
+type PropertyModelAddressGeolocation {
+  latitude: Float
+  longitude: Float
+}
+
+type PropertyModelEpc {
+  exempt: Boolean
+  eer: Int
+  eerPotential: Int
+  eir: Int
+  eirPotential: Int
+}
+
+type PropertyModelExternalArea {
+  type: String
+  min: Float
+  max: Float
+}
+
+type PropertyModelFee {
+  type: String
+  amount: Int
+}
+
+type PropertyModelInternalArea {
+  type: String
+  min: Float
+  max: Float
+}
+
+type PropertyModelLettingFee {
+  type: String
+  amount: Float
+}
+
+type PropertyModelManagementFee {
+  type: String
+  amount: Float
+}
+
+type PropertyModelSelling {
+  instructed: String
+  price: Float
+  qualifier: String
+  status: String
+  disposal: String
+  completed: String
+  exchanged: String
+  tenure: PropertyModelSellingTenure
+  vendorId: String
+  agency: String
+  fee: PropertyModelFee
+  recommendedPrice: Int
+  brochureId: String
+}
+
+type PropertyModelSellingTenure {
+  type: String
+  expiry: String
+}
+
+type PropertyRoomModel {
+  name: String
+  dimensions: String
+  description: String
+}
+
+type Query {
+  GetApplicants(pageSize: Int, pageNumber: Int, sortBy: String, embed: [ApplicantQueryEmbed], id: [String], age: [String], furnishing: [String], locality: [String], negotiatorId: [String], officeId: [String], parking: [String], situation: [String], style: [String], type: [String], address: String, departmentId: String, marketingMode: [String], name: String, priceFrom: String, priceTo: String, rentFrom: String, rentTo: String, rentFrequency: [String], bedroomsFrom: Int, bedroomsTo: Int, createdFrom: String, createdTo: String, lastCallFrom: String, lastCallTo: String, nextCallFrom: String, nextCallTo: String, metadata: [String]): PagedResultApplicantModel!
+  GetApplicantById(id: String!, embed: [ApplicantQueryEmbed]): ApplicantModel!
+  GetApplicantRelationshipById(id: String!, relationshipId: String!): ApplicantContactRelationshipModel!
+  GetApplicantRelationships(id: String!, pageSize: Int, pageNumber: Int): PagedResultApplicantContactRelationshipModel!
+  GetAppointments(pageSize: Int, pageNumber: Int, sortBy: String, id: [String!], typeId: [String!], negotiatorId: [String!], officeId: [String!], propertyId: [String!], start: String!, end: String!, includeCancelled: Boolean, includeUnconfirmed: Boolean, embed: [AppointmentQueryEmbed]): PagedResultAppointmentModel!
+  GetAppointmentById(id: String!, embed: [AppointmentQueryEmbed]): AppointmentModel!
+  GetAreas(pageSize: Int, pageNumber: Int, sortBy: String, id: [String!], departmentId: [String!], officeId: [String!], name: String, active: Boolean): PagedResultAreaModel!
+  GetAreaById(id: String!): AreaModel!
+  GetCompanyById(id: String!, embed: [CompanyQueryEmbed]): CompanyModel!
+  GetCompanies(pageSize: Int, pageNumber: Int, sortBy: String, embed: [CompanyQueryEmbed], id: [String!], address: String, branch: String, name: String, typeId: String, createdFrom: String, createdTo: String, metadata: [String!]): CompanyModelPagedResult!
+  GetCompanyRoles(id: String!, pageSize: Int, pageNumber: Int): CompanyRoleModelPagedResult!
+  GetConfigurationsByType(type: ConfigurationType): [ListItemModel]
+  GetConfigurationByTypeAndId(type: ConfigurationType, id: String): ListItemModel
+  GetContacts(pageSize: Int, pageNumber: Int, sortBy: String, id: [String!], negotiatorId: [String!], officeId: [String!], address: String, identityCheck: String, name: String, marketingConsent: String, active: Boolean, createdFrom: String, createdTo: String, embed: [ContactQueryEmbed]): PagedResultContactModel!
+  GetContactById(id: String!, embed: [ContactQueryEmbed]): ContactModel!
+  GetConveyancing(pageSize: Int, pageNumber: Int, sortBy: String, id: [String!], propertyId: [String!], embed: [ConveyancingQueryEmbed], metadata: [String!]): ConveyancingModelPagedResult!
+  GetConveyancingById(id: String!, embed: [ConveyancingQueryEmbed]): ConveyancingModel!
+  GetConveyancingChain(id: String!, pageSize: Int, pageNumber: Int, sortBy: String): ConveyancingModelPagedResult!
+  GetDepartments(pageSize: Int, pageNumber: Int, id: [String!], name: String): DepartmentModelPagedResult!
+  GetDepartmentById(id: String!): DepartmentModel!
+  GetDocuments(pageSize: Int, pageNumber: Int, sortBy: String, embed: [DocumentQueryEmbed], id: [String], associatedId: [String], associatedType: [String], typeId: [String], metadata: [String]): PagedResultDocumentModel!
+  GetDocumentById(id: String!, embed: [DocumentQueryEmbed]): DocumentModel!
+  GetEnquiries(pageSize: Int, pageNumber: Int, sortBy: String, enquiryType: String, createdFrom: String, createdTo: String): PagedResultEnquiryModel!
+  GetEnquiryById(id: Int!): EnquiryModel!
+  GetIdentityChecks(id: [String!], pageSize: Int, pageNumber: Int, sortBy: String, contactId: [String!], negotiatorId: [String!], checkDateFrom: String, checkDateTo: String, createdFrom: String, createdTo: String, status: [String!], embed: [IdentityCheckQueryEmbed]): PagedResultIdentityCheckModel!
+  GetIdentityCheckById(id: String!, embed: [IdentityCheckQueryEmbed]): IdentityCheckModel!
+  GetJournalEntries(pageSize: Int, pageNumber: Int, sortBy: String, associatedType: [String!], associatedId: [String!], negotiatorId: [String!], typeId: [String!], createdFrom: String, createdTo: String): JournalEntryModelPagedResult!
+  GetPropertyKeys(propertyId: String!): [KeyModel]
+  GetKey(propertyId: ID!, keyId: ID!): KeyModel
+  GetKeyMovements(propertyId: ID!, keyId: ID!): [KeyMovementModel]
+  GetKeyMovement(propertyId: ID!, keyId: ID!, movementId: ID!): KeyMovementModel
+  GetLandlordById(id: String!, embed: [LandlordQueryEmbed]): LandlordModel!
+  GetLandlords(pageSize: Int, pageNumber: Int, sortBy: String, embed: [LandlordQueryEmbed], id: [String!], active: Boolean, address: String, name: String, createdFrom: String, createdTo: String, metadata: [String!]): PagedResultLandlordModel!
+  GetLandlordRelationships(id: String!, pageSize: Int, pageNumber: Int): PagedResultLandlordRelationshipModel!
+  GetLandlordRelationshipById(id: String!, relationshipId: String!): LandlordRelationshipModel!
+  GetNegotiators(pageSize: Int, pageNumber: Int, sortBy: String, id: [String!], officeId: [String!], name: String, embed: [NegotiatorQueryEmbed]): PagedResultNegotiatorModel!
+  GetNegotiatorById(id: String!, embed: [NegotiatorQueryEmbed]): NegotiatorModel!
+  GetOffers(pageSize: Int, pageNumber: Int, sortBy: String, id: [String], applicantId: [String], propertyId: [String], status: [String], address: String, amountFrom: Float, amountTo: Float, dateFrom: String, dateTo: String, metadata: [String], name: String, embed: [OfferQueryEmbed]): PagedResultOfferModel!
+  GetOfferById(id: String!, embed: [OfferQueryEmbed]): OfferModel!
+  GetOffices(pageSize: Int, pageNumber: Int, sortBy: String, id: [String!], address: String, name: String, embed: [OfficeQueryEmbed]): PagedResultOfficeModel!
+  GetOfficeById(id: String!, embed: [OfficeQueryEmbed]): OfficeModel!
+  Ping: String!
+  GetProperties(pageSize: Int, pageNumber: Int, sortBy: String, embed: [PropertyQueryEmbed], id: [String!], age: [String!], agentRole: [String!], landlordId: [String!], lettingStatus: [String!], locality: [String!], parking: [String!], sellingStatus: [String!], situation: [String!], style: [String!], type: [String!], address: String, departmentId: String, marketingMode: [String!], bedroomsFrom: Int, bedroomsTo: Int, priceFrom: Int, priceTo: Int, rentFrom: Float, rentTo: Float, rentFrequency: [String!], officeId: [String!], internetAdvertising: Boolean): PagedResultPropertyModel!
+  GetPropertyById(id: String!, embed: [PropertyQueryEmbed]): PropertyModel!
+  GetPropertyImages(pageSize: Int, pageNumber: Int, sortBy: String, id: [String!], embed: [PropertyImageQueryEmbed], propertyId: [String!], type: [String!], metadata: [String!]): PagedResultPropertyImageModel!
+  GetPropertyImageById(id: String!, embed: [PropertyImageQueryEmbed]): PropertyImageModel!
+  GetSources(pageSize: Int, pageNumber: Int, sortBy: String, id: [String!], departmentId: [String], officeId: [String], name: String, active: Boolean, type: String, createdFrom: String, createdTo: String): PagedResultSourceModel!
+  GetSourceById(id: String!): SourceModel!
+  GetTasks(pageSize: Int, pageNumber: Int, sortBy: String, embed: [TaskQueryEmbed], id: [String], applicantId: [String], contactId: [String], landlordId: [String], officeId: [String], propertyId: [String], recipientId: [String], senderId: [String], typeId: [String], tenancyId: [String], activatesFrom: String, activatesTo: String, createdFrom: String, createdTo: String, metadata: [String]): PagedResultTaskModel!
+  GetTaskById(id: String!, embed: [TaskQueryEmbed]): TaskModel!
+  GetTenancies(pageSize: Int, pageNumber: Int, sortBy: String, embed: [TenancyQueryEmbed], id: [String!], negotiatorId: [String!], applicantId: [String!], propertyId: [String!], status: [String!], createdFrom: String, createdTo: String, modifiedFrom: String, modifiedTo: String, metadata: [String!]): PagedResultTenancies!
+  GetTenancyById(id: String!, embed: [TenancyQueryEmbed]): TenancyModel!
+  GetTenancyRelationships(id: String!, pageSize: Int, pageNumber: Int): PagedResultTenancyRelationships!
+  GetTenancyChecks(id: String!, pageSize: Int, pageNumber: Int): PagedResultTenancyChecks!
+  GetTenancyCheckById(id: String!, checkId: String!): TenancyCheckModel!
+  GetVendors(pageSize: Int, pageNumber: Int, sortBy: String, id: [String!], embed: [VendorQueryEmbed], negotiatorId: [String], officeId: [String], address: String, name: String, createdFrom: String, createdTo: String, lastCallFrom: String, lastCallTo: String, nextCallFrom: String, nextCallTo: String, metadata: [String]): PagedResultVendorModel!
+  GetVendorById(id: String!, embed: [VendorQueryEmbed]): VendorModel!
+  GetVendorRelationships(id: String!, pageSize: Int, pageNumber: Int): PagedResultVendorRelationshipModel
+  GetVendorRelationshipById(id: String!, relationshipId: String!): VendorRelationship
+  GetWorksOrders(pageSize: Int, pageNumber: Int, sortBy: String, embed: [WorksOrdersEmbed], id: [String], companyId: [String], negotiatorId: [String], propertyId: [String], status: [WorksOrdersStatus], tenancyId: [String], typeId: [String], completedFrom: String, completedTo: String, createdFrom: String, createdTo: String, requiredFrom: String, requiredTo: String, metadata: JSON): PagedResultWorksOrders!
+  GetWorksOrdersById(embed: WorksOrdersEmbed, id: String!): WorkOrder!
+  GetWorksOrderItems(pageNumber: Int, pageSize: Int, id: String!): PagedResultWorksOrderItem!
+  GetWorksOrderItemById(itemId: String!, id: String!): WorksOrderItem!
+}
+
+type SourceModel {
+  id: String
+  created: String
+  modified: String
+  name: String
+  type: String
+  officeIds: [String]
+  departmentIds: [String]
+  _eTag: String
+  _links: JSON
+  _embedded: JSON
+}
+
+type TaskModel {
+  id: String
+  created: String
+  modified: String
+  activates: String
+  completed: String
+  typeId: String
+  senderId: String
+  text: String
+  landlordId: String
+  propertyId: String
+  applicantId: String
+  tenancyId: String
+  contactId: String
+  recipientId: String
+  recipientType: String
+  metadata: JSON
+  _eTag: String
+  _links: JSON
+  _embedded: EmbeddedTaskModel
+}
+
+type TenancyCheckModel {
+  id: String
+  created: String
+  modified: String
+  description: String
+  status: String
+  type: String
+  tenancyId: String
+  _eTag: String
+  _links: JSON
+  _embedded: JSON
+}
+
+type TenancyModel {
+  id: String
+  created: String
+  modified: String
+  startDate: String
+  endDate: String
+  status: String
+  agentRole: String
+  rent: Int
+  rentFrequency: String
+  endDateConfirmed: Boolean
+  isPeriodic: Boolean
+  rentInstalmentsFrequency: String
+  rentInstalmentsAmount: Float
+  rentInstalmentStart: String
+  meterReadingGas: String
+  meterReadingGasLastRead: String
+  meterReadingElectricity: String
+  meterReadingElecticityLastRead: String
+  meterReadingWater: String
+  meterReadingWaterLastRead: String
+  typeId: String
+  negotiatorId: String
+  propertyId: String
+  applicantId: String
+  source: TenancySourceModel
+  related: [TenancyRelatedModel!]
+  fromArchive: Boolean
+  _eTag: String
+  _links: JSON
+  _embedded: EmbeddedTenancyModel
+}
+
+type TenancyPrimaryAddressModel {
+  buildingName: String
+  buildingNumber: String
+  line1: String
+  line2: String
+  line3: String
+  line4: String
+  postcode: String
+  countryId: String
+}
+
+type TenancyRelatedModel {
+  id: String
+  name: String
+  title: String
+  forename: String
+  surname: String
+  type: String
+  homePhone: String
+  workPhone: String
+  mobilePhone: String
+  email: String
+  primaryAddress: TenancyPrimaryAddressModel
+  fromArchive: Boolean
+}
+
+type TenancySourceModel {
+  id: String
+  type: String
+}
+
+type VendorAddress {
+  buildingName: String
+  buildingNumber: String
+  line1: String
+  line2: String
+  line3: String
+  line4: String
+  postcode: String
+  countryId: String
+}
+
+type VendorModel {
+  id: String
+  created: String
+  modified: String
+  lastCall: String
+  nextCall: String
+  typeId: String
+  sellingReasonId: String
+  solicitorId: String
+  propertyId: String
+  source: VendorSourceModel
+  related: [VendorRelate]
+  negotiatorId: String
+  officeIds: [String]
+  archivedOn: String
+  fromArchive: Boolean
+  metadata: JSON
+  _eTag: JSON
+  _links: JSON
+  _embedded: EmbeddedVendorModel
+}
+
+type VendorRelate {
+  id: String
+  name: String
+  type: String
+  homePhone: String
+  workPhone: String
+  mobilePhone: String
+  email: String
+  primaryAddress: VendorAddress
+}
+
+type VendorRelationship {
+  id: String
+  vendorId: String
+  created: String
+  modified: String
+  associatedType: String
+  associatedId: String
+  isMain: Boolean
+  _links: JSON
+  _embedded: JSON
+}
+
+type VendorSourceModel {
+  id: String
+  type: String
+}
+
+type WorkOrder {
+  id: String
+  created: String
+  modified: String
+  companyId: String
+  propertyId: String
+  tenancyId: String
+  negotiatorId: String
+  typeId: String
+  status: String
+  description: String
+  reporter: String
+  booked: String
+  required: String
+  completed: String
+  totalNetAmount: Float
+  totalVatAmount: Float
+  totalGrossAmount: Float
+  metadata: JSON
+  items: [WorksOrderItem]
+  _eTag: String
+  _links: JSON
+  _embedded: JSON
+}
+
+type WorksOrderItem {
+  id: String
+  worksOrderId: String
+  created: String
+  modified: String
+  notes: String
+  chargeTo: String
+  estimate: Float
+  estimateType: String
+  netAmount: Float
+  vatAmount: Float
+  grossAmount: Float
+  _eTag: String
+  _links: JSON
+  _embedded: JSON
+}
+
+"""The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf)."""
+scalar JSON
+

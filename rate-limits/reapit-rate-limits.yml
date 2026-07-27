@@ -1,0 +1,57 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+provider: Reapit
+providerId: reapit
+generated: '2026-07-26'
+method: searched
+created: '2026-07-26'
+modified: '2026-07-26'
+tags:
+- Rate Limiting
+- Real Estate
+- CRM
+- United Kingdom
+description: >-
+  Reapit publishes hard platform rate limits in the Foundations REST
+  documentation and repeats them in the Usage Guidelines. They apply per
+  application and, for concurrency, per customer — which matters because a
+  multi-tenant AppMarket app is throttled per agency it serves, not globally.
+  Embed-triggered sub-requests and webhook deliveries both count toward usage
+  and billing exactly as if the app had issued them directly.
+sources:
+- https://foundations-documentation.reapit.cloud/api/api-documentation#rate-limits
+- https://foundations-documentation.reapit.cloud/app-development/usage-guidelines
+headers:
+  requestId: x-amzn-RequestId
+  rateLimitRemaining: null
+  rateLimitNote: >-
+    No RateLimit-* or X-RateLimit-* response headers are published, so remaining
+    budget is not observable — a client only learns it exceeded a limit from the
+    429.
+responseCodes:
+  throttled: 429
+limits:
+- name: Requests per second
+  scope: application
+  metric: requests_per_second
+  limit: 20
+  timeFrame: second
+- name: Concurrent requests per customer
+  scope: customer
+  metric: concurrent_requests
+  limit: 5
+  timeFrame: instant
+- name: Requests per day
+  scope: application
+  metric: requests_per_day
+  limit: 250000
+  timeFrame: day
+counted_toward_limits:
+- Direct REST calls issued by the application
+- Sub-requests triggered by the embed query parameter
+- Webhook-originated requests (contribute to developer analytics and billing)
+- Downstream REST calls made by the GraphQL proxy on the caller's behalf
+overage_behavior: >-
+  Requests beyond the limit are rejected with 429 Too Many Requests. Reapit does
+  not document an automatic burst allowance or a published process for raising
+  limits; volume concerns go to partners@reapit.com.

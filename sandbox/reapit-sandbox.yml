@@ -1,0 +1,119 @@
+generated: '2026-07-26'
+method: searched
+source: >-
+  https://foundations-documentation.reapit.cloud/api/api-documentation#sandbox-mode
+  , https://foundations-documentation.reapit.cloud/api/webhooks ,
+  https://foundations-documentation.reapit.cloud/api/desktop-api ,
+  https://foundations-documentation.reapit.cloud/api/notifications
+description: >-
+  Reapit's sandbox is one of the better ones in vertical software, and it is the
+  reason this provider is not a "certified but unreachable" API. Registering as a
+  developer on the portal is enough to get an immediately usable, fully
+  read/write demonstration dataset — no customer install, no sales conversation.
+  The mechanism is not a separate host or a key prefix: it is a single magic
+  tenant identifier, SBOX, passed in the reapit-customer header (or implied by
+  logging into Reapit Connect with developer-portal credentials). The Interactive
+  API Explorer is wired to it automatically. Sandbox is where an integration is
+  built and proven; production access still requires an AppMarket listing review
+  and a customer choosing to install the app.
+separation_model:
+  style: tenant identifier, not key prefix or separate host
+  base_url: https://platform.reapit.cloud
+  base_url_note: the same production host serves sandbox and live data
+  key_prefixes: none
+  test_vs_live: >-
+    Which dataset you touch is decided entirely by which customer the token
+    addresses — SBOX for the sandbox, a real customer id for live data.
+access:
+  requirement: registration as a developer on the Reapit developer portal
+  registration: https://developers.reapit.cloud/register
+  customer_install_required: false
+  read_and_write: true
+  read_and_write_note: >-
+    "Sandbox mode supports processing of all read and write requests so that you
+    can build and test in confidence without impacting customer data."
+magic_values:
+- value: SBOX
+  kind: tenant identifier
+  where: 'reapit-customer request header (client-credentials flow)'
+  description: The sandbox customer id — the single magic value the whole sandbox turns on.
+- value: webhook-test
+  kind: customerId in webhook payload
+  where: events emitted by the developer-portal Ping function
+  description: >-
+    Every Ping event carries customerId "webhook-test" so a receiver can
+    recognise a test delivery.
+- value: 9e7e4181-6210-49ea-abf5-d5ce16d23647
+  kind: entityId in webhook payload
+  where: events emitted by the developer-portal Ping function
+  description: The fixed entity id used in Ping example payloads.
+flows:
+- flow: client credentials
+  how: >-
+    Obtain a token from https://connect.reapit.cloud/oauth/token with
+    grant_type=client_credentials and send `reapit-customer: SBOX`.
+- flow: authorization code
+  how: >-
+    Authenticate against Reapit Connect with your developer-portal credentials;
+    the resulting user-context token addresses the sandbox tenant directly, so
+    no reapit-customer header is needed.
+- flow: MCP
+  how: >-
+    The MCP alpha documentation uses SBOX as its worked example tenant id in the
+    reapit-customer header.
+consoles:
+- name: Interactive API Explorer
+  url: https://developers.reapit.cloud/swagger
+  note: connected to the sandbox automatically for a quick-start experience
+- name: GraphQL Playground
+  url: https://graphql.reapit.cloud/graphql
+  note: >-
+    Loads in a browser; introspection works anonymously, but executing a query
+    needs both the idToken and accessToken headers.
+- name: MCP Inspector
+  url: https://github.com/modelcontextprotocol/inspector
+  note: >-
+    Reapit documents `npx @modelcontextprotocol/inspector` with Streamable HTTP
+    transport as the fastest way to exercise the MCP server against SBOX.
+- name: Webhook management UI
+  url: https://developers.reapit.cloud/webhooks/manage
+webhook_testing:
+  ping: >-
+    The Ping function sends an example payload for the selected topic to the
+    configured URL and shows success or failure from the response.
+  recommendation: >-
+    Register webhooks in an inactive state, Ping to validate the endpoint, then
+    test against the sandbox before subscribing to live customers.
+  sandbox_retry_behavior: >-
+    Failed deliveries for Sandbox data are NOT retried — the exponential-backoff
+    policy applies to live events only.
+  third_party_helpers: [https://www.requestbin.com, https://webhook.site]
+desktop_edition:
+  name: AgencyCloud Developer Edition
+  url: https://developers.reapit.cloud/desktop
+  purpose: 'required to test the AgencyCloud Desktop API (agencycloud: URI scheme)'
+  caveats:
+  - Reapit does not provide technical support for Developer Edition
+  - documented as beta with known gaps, e.g. desktop-added images and documents
+    do not appear on the platform
+notifications_testing:
+  requirement: an active Developer Edition subscription and a dedicated negotiator ID
+  note: >-
+    Display of notifications inside a live customer CRM must be enabled by
+    Reapit support at that customer's request.
+production_path:
+  steps:
+  - build and prove the integration against SBOX
+  - submit the app to the AppMarket (https://marketplace.reapit.cloud/developer/submit-app)
+  - pass Reapit's app listing review
+  - a customer installs the app and grants the requested permissions
+  - use that customer's id in the reapit-customer header
+  gate: >-
+    This is the real constraint on the platform — sandbox is self-serve, but no
+    amount of sandbox work reaches a real agency's data without listing review
+    plus a customer install.
+not_published:
+- static test card numbers or bank accounts (Reapit is not a payments provider)
+- test clocks or time simulation
+- fixture/trigger tooling for forcing arbitrary CRM states
+- a documented reset endpoint for the sandbox dataset

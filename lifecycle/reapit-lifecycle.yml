@@ -1,0 +1,123 @@
+generated: '2026-07-26'
+method: searched
+source: >-
+  https://foundations-documentation.reapit.cloud/api/api-documentation#versioning
+  , https://foundations-documentation.reapit.cloud/whats-new ,
+  https://status.reapit.com/ ,
+  https://www.reapit.com/legal/terms-and-conditions/reapit-partner-business-service-catalogue
+description: >-
+  Reapit runs date-based API versioning with a required api-version header, a
+  written definition of what counts as a breaking change, and a six-month sunset
+  period on the previous version — a real, published deprecation policy, which
+  is rarer than it should be for a vertical CRM vendor. The platform is still
+  formally labelled beta in the documentation even though the current version
+  has been stable since 2020-01-31. Uptime is published on a Statuspage-style
+  status site; response and resolution commitments live in the Partner Business
+  Services Catalogue rather than in a public uptime SLA.
+versioning:
+  scheme: date-based header
+  header: api-version
+  current: '2020-01-31'
+  required: true
+  docs: https://foundations-documentation.reapit.cloud/api/api-documentation#versioning
+  note: >-
+    Only one dated version has been issued since the platform launched; new
+    capability has been shipped as additive, non-breaking change (see
+    changelog/reapit-changelog.yml).
+  platform_status: >-
+    The REST API documentation still carries a "Our Platform is in beta" notice.
+    The MCP server is explicitly alpha. The GraphQL proxy is out of internal beta
+    and in production use by Reapit's own Geo Diary AppMarket app. The IaaS
+    Developer Portal pipelines and CLI are beta.
+breaking_changes:
+  definition_published: true
+  examples:
+  - renaming or removing an existing field or endpoint
+  - changing the URL structure of an existing endpoint
+  - changing the filters an existing endpoint provides
+  - changing error response codes or messages an endpoint provides
+  - modifying or adding a new validation to an existing resource
+  - changing the data type of an existing field
+  - requiring a parameter that was not previously required
+  policy: >-
+    Reapit states it makes every effort to implement changes as non-breaking;
+    a breaking change triggers a new dated version.
+deprecation:
+  policy_published: true
+  policy_url: https://foundations-documentation.reapit.cloud/api/api-documentation#deprecation
+  mechanism: >-
+    When a new dated version is released the previous version immediately enters
+    its sunset period.
+  sunset_period_months: 6
+  sunset_period_note: >-
+    Documented as "presently six months though will be reviewed as our platform
+    continues to grow and evolve."
+  end_of_sunset: the version becomes deprecated and consumers must adopt a newer version
+  notification: >-
+    Reapit states applications using a soon-to-be-deprecated version will be
+    notified. Notification is out-of-band (developer portal / partner comms).
+  sunset_header: false
+  sunset_header_note: >-
+    No RFC 8594 Sunset or Deprecation response header is documented; the policy
+    is prose plus direct notification, not a machine-readable signal.
+component_lifecycle:
+- component: Reapit Elements v5
+  state: current
+  note: significant rewrite; deprecated v4 components still shipped for incremental adoption
+- component: Reapit Elements v4
+  state: maintenance
+  note: >-
+    security patches and regressions only, until the next major release, then
+    end-of-life. Deprecated v4 components inside v5 are planned for removal at
+    the next major; codemods provided where feasible.
+- component: Reapit Elements v1, v2, v3
+  state: end-of-life
+  note: no longer supported; consumers urged to upgrade to v5
+- component: Webhook symmetric (legacy) signing
+  state: obsolescent
+  note: >-
+    Asymmetric Ed25519 signing "should be used over the legacy method, which
+    will become obsolete at some point in the future."
+- component: Foundations MCP server
+  state: alpha
+  note: >-
+    "Parameters, tools, resources, prompts and responses are likely to change";
+    the registered toolset may grow and List Tools is the authoritative set.
+    Embedded-resource behaviour is explicitly flagged as subject to change.
+- component: AgencyCloud Desktop API / Developer Edition
+  state: beta
+  note: >-
+    Documented with known gaps (desktop-added images and documents do not appear
+    on the platform) and no technical support for Developer Edition.
+status_page:
+  url: https://status.reapit.com/
+  status: 200
+  probed: '2026-07-26'
+  scope: Reapit platform and product status
+sla:
+  public_uptime_target: null
+  service_catalogue: https://www.reapit.com/legal/terms-and-conditions/reapit-partner-business-service-catalogue
+  note: >-
+    Reapit publishes a Partner Business Services Catalogue (BSC) carrying
+    response and resolution times by impact level rather than a public uptime
+    percentage. P1/P2 issues are logged through the Reapit Service Desk Portal
+    (https://reapitsupport.refined.site/) selecting product type "Reapit API";
+    Reapit downgrades incorrectly-classified P1/P2 tickets and applies penalties
+    under Schedule 4 of the Developer Portal Terms & Conditions. P3/P4 issues and
+    all feature requests go to partners@reapit.com.
+changelog:
+  url: https://foundations-documentation.reapit.cloud/whats-new
+  cadence: monthly, dated
+  detail: changelog/reapit-changelog.yml
+  connect_changelog: https://foundations-documentation.reapit.cloud/reapit-connect-updates
+feature_requests:
+  url: https://foundations-documentation.reapit.cloud/dev-requests
+  mechanism: GitHub issue template on reapit/foundations plus partners@reapit.com
+  note: >-
+    Reapit publishes no public product roadmap for the Foundations platform;
+    the help section references milestones, and feature requests are triaged by
+    the Partnerships team.
+deprecated_operations: []
+deprecated_operations_note: >-
+  No operation in the introspected GraphQL schema carries an @deprecated
+  directive, and no deprecated endpoints are listed in the REST documentation.

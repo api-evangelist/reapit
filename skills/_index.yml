@@ -1,0 +1,63 @@
+generated: '2026-07-26'
+method: generated
+source: >-
+  Grounded in graphql/reapit-foundations.graphql (live anonymous introspection,
+  2026-07-26) plus the published documentation captured in
+  conventions/, errors/, scopes/, sandbox/ and asyncapi/. Every operation name
+  referenced in a skill was verified verbatim against the introspected schema;
+  every MCP tool name was verified against the published tool list in
+  mcp/reapit-mcp.yml. No operation or tool is invented.
+description: >-
+  Packaged operating instructions for the marquee Reapit Foundations flows.
+  Because Reapit's REST Swagger is bearer-gated, these skills are grounded in
+  the GraphQL schema — which Reapit describes as a projection of the REST
+  platform "with no extension or deviation" — and each skill names the MCP tools
+  that cover the same ground where they exist.
+skills:
+- file: reapit-authenticate-and-address-a-customer.md
+  name: Authenticate with Reapit Connect and address the right customer
+  api: authentication/reapit-authentication.yml
+  operations: [Ping]
+  covers: [oauth2, tenant-header, api-version, sandbox, scopes, mcp-access]
+- file: reapit-lead-to-viewing.md
+  name: Turn an enquiry into a registered applicant and a booked viewing
+  api: graphql/reapit-foundations.graphql
+  operations: [GetEnquiries, GetEnquiryById, CreateContact, CreateApplicant, CreateApplicantRelationship,
+    GetConfigurationsByType, GetNegotiators, GetOffices, GetProperties, CreateAppointment,
+    GetAppointments, CreateJournalEntry]
+  mcp_tools: [contacts_create, applicants_create, appointments_create, appointments_get_types,
+    appointments_search]
+- file: reapit-syndicate-listings.md
+  name: Create and syndicate property listings out of the CRM
+  api: graphql/reapit-foundations.graphql
+  operations: [GetProperties, GetPropertyById, CreateProperty, UpdateProperty, GetPropertyImages,
+    CreatePropertyImage, UpdatePropertyImage, DeletePropertyImage, GetAreas, GetDepartments,
+    GetOffices, GetNegotiators, GetVendors, GetLandlords, GetConfigurationsByType]
+  mcp_tools: [properties_search, properties_get_by_id, areas_search, get_departments,
+    get_property_attribute_options]
+- file: reapit-offer-to-completion.md
+  name: Take a sales offer through conveyancing and the chain
+  api: graphql/reapit-foundations.graphql
+  operations: [GetOffers, GetOfferById, CreateOffer, UpdateOffer, GetConveyancing,
+    GetConveyancingById, GetConveyancingChain, UpdateConveyancing, CreateUpwardLinkModel,
+    CreateDownwardLinkModel, GetCompanies]
+  mcp_tools: [offers_search, properties_search, properties_get_by_id]
+- file: reapit-lettings-tenancy-and-works-orders.md
+  name: Run a lettings tenancy and raise works orders against it
+  api: graphql/reapit-foundations.graphql
+  operations: [CreateTenancy, GetTenancies, GetTenancyById, GetTenancyRelationships,
+    GetTenancyChecks, CreateTenancyCheck, UpdateTenancyCheck, DeleteTenancyCheck, GetWorksOrders,
+    CreateWorksOrder, UpdateWorksOrder, CreateWorksOrderItem, UpdateWorksOrderItem,
+    DeleteWorksOrderItem, GetCompanies]
+  mcp_tools: [tenancies_search, tenancies_get_by_id, landlords_search, companies_search]
+- file: reapit-consume-webhooks.md
+  name: Subscribe to Reapit webhooks and verify every payload
+  api: asyncapi/reapit-foundations-webhooks.yml
+  operations: []
+  covers: [ed25519-signing, retry-backoff, event-filters, ping-testing, notifications-inbound]
+provider_published_skills: none
+provider_published_skills_note: >-
+  No AGENTS.md, skills/ directory or agent-instruction file was found on the
+  Reapit documentation site or in the reapit GitHub organization. The Elements
+  design-system and component-library docs are exposed over MCP for coding
+  agents, but that is documentation retrieval, not a packaged skill.

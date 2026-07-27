@@ -1,0 +1,106 @@
+generated: '2026-07-26'
+method: searched
+source: https://foundations-documentation.reapit.cloud/app-development/iaas/cli-beta
+description: >-
+  Reapit ships a first-party CLI, but it is worth being precise about what it
+  is: `@reapit/cli` drives Reapit's IaaS (Infrastructure as a Service) hosting
+  platform — creating pipelines and shipping releases for apps that run ON
+  Reapit — it is NOT a client for the Foundations CRM API. There is no
+  `reapit properties list`. Authentication is an API key created on the
+  pipelines page of the developer portal, not a Reapit Connect token, which
+  makes it a separate credential from everything else in this repo. Documented
+  as beta.
+name: reapit
+package: "@reapit/cli"
+version: 2.1.6
+registry: npm
+status: beta
+scope: Reapit IaaS platform (app hosting, pipelines, releases) — not the Foundations API
+docs: https://foundations-documentation.reapit.cloud/app-development/iaas/cli-beta
+related_docs:
+- https://foundations-documentation.reapit.cloud/app-development/iaas
+- https://foundations-documentation.reapit.cloud/app-development/iaas/developer-portal-beta
+- https://foundations-documentation.reapit.cloud/app-development/iaas/custom-domain
+install:
+- manager: npm
+  command: npm i -g @reapit/cli
+  requires: Node.js
+- manager: yarn
+  command: yarn global add @reapit/cli
+  requires: Node.js
+authentication:
+  mechanism: API key
+  obtain: >-
+    Developer portal > any app page > Pipelines > "API Keys" > Create API Key.
+  configure: reapit config
+  config_scopes: [global, project]
+  config_note: >-
+    Choose global for general projects; project-level Reapit config is for
+    working with multiple Reapit accounts. Re-run `reapit config` and choose
+    `show` to inspect the current config.
+commands:
+- group: config
+  command: reapit config
+  description: Set or show the API key configuration (prompts for the key; `show` displays
+    current config).
+- group: bootstrap
+  command: reapit bootstrap <name> react <client-id> <user-pool>
+  description: >-
+    Scaffold a React app in the current working directory with the tooling from
+    the Create React App template, wired to the given app client id and user
+    pool.
+- group: bootstrap
+  command: reapit bootstrap <name> node ...
+  description: Node app scaffold — documented as "coming soon", on the roadmap, not
+    yet supported.
+  status: planned
+- group: pipeline
+  command: reapit pipeline list
+  description: List the pipelines authorised for the configured API key.
+- group: pipeline
+  command: reapit pipeline create
+  description: >-
+    Interactively create a pipeline, prompting for App Id, Project Name,
+    Deployment Branch, App Type (react or node), Repository URL, OutDir, Build
+    Command and Package Manager (yarn or npm). Streams live provisioning state.
+- group: pipeline
+  command: reapit pipeline edit
+  description: Update the Reapit pipeline config and sync it to the IaaS platform.
+- group: pipeline
+  command: reapit pipeline link <pipeline-id>
+  description: Download an existing pipeline's configuration into the current working
+    directory.
+- group: pipeline
+  command: reapit pipeline delete
+  description: Delete the pipeline whose config file is in the current working directory.
+- group: release
+  command: reapit release list
+  description: List deployments made on the pipeline in the current working directory.
+- group: release
+  command: reapit release version
+  description: List available versions and redeploy a previously deployed one.
+- group: release
+  command: reapit release zip
+  description: >-
+    Deploy from the local build directory configured on the pipeline (assumes
+    the app is already built); prompts to update the package version.
+- group: release
+  command: reapit release repo
+  description: >-
+    Trigger a deployment from the configured main branch of the repository.
+    Streams real-time progress; closing the CLI does not stop the deployment.
+key_flows:
+- name: Ship a React app onto Reapit IaaS
+  steps:
+  - npm i -g @reapit/cli
+  - reapit config   # paste the API key from the portal
+  - reapit bootstrap my-new-reapit-app react {client-id} {user-pool}
+  - reapit pipeline create
+  - reapit release repo
+- name: Roll back a deployment
+  steps:
+  - reapit release version   # pick a previously deployed version
+not_covered:
+- No Foundations CRM resource commands (properties, contacts, applicants, ...)
+- No webhook forwarding / event triggering equivalent to a payments CLI
+- No local mock or sandbox seeding commands

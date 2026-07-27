@@ -1,0 +1,298 @@
+generated: '2026-07-26'
+method: searched
+source: https://foundations-documentation.reapit.cloud/api/webhooks
+spec_type: null
+spec_status: >-
+  No AsyncAPI, CloudEvents or event-catalog document is published anywhere on
+  the Reapit estate — the GitHub org (reapit/foundations, reapit/foundations-
+  documentation, reapit/ts-cdk-constructs) carries none, and no /asyncapi.yaml
+  or /asyncapi.json exists on any host. This file is the webhook catalog
+  captured from the documentation, not a fabricated AsyncAPI.
+description: >-
+  Reapit Foundations Webhooks is a genuinely complete outbound event system for
+  a CRM vendor: 55 published topics across 17 entity domains, per-customer
+  subscription (including the SBOX sandbox), JSON-Schema event filters,
+  Ed25519 asymmetric payload signing, documented exponential-backoff retry, and
+  published static source IPs for allowlisting. Events fire on data changes from
+  ANY application touching the customer's CRM — AgencyCloud, Property Cloud or
+  another AppMarket app — which is what makes it the practical integration
+  substrate for the UK agency market. Payload bodies reuse the same schemas as
+  the corresponding REST endpoints.
+transport: HTTPS POST
+content_type: application/json
+management:
+  ui: https://developers.reapit.cloud/webhooks/new
+  manage_ui: https://developers.reapit.cloud/webhooks/manage
+  api: https://platform.reapit.cloud/webhooks
+  api_note: webhooks can be created and managed programmatically through the REST API
+  subscription_scope: per customer (per Reapit tenant), including SBOX
+  filters: >-
+    Optional per-webhook event filters expressed as JSON Schema; a filter is
+    tied to a single topic and the event is only delivered when the payload
+    validates. Example use is targeting a specific appointment typeId (e.g. VL
+    for valuation) on appointments.created / appointments.modified.
+  payload_data: optional inclusion of semi-structured payload data
+security:
+  signing:
+    algorithm: Ed25519
+    header: X-Signature
+    format: 's:keyId:timestamp:signature'
+    key_scope: key pair is generated per APP, not per webhook
+    public_key_endpoint: https://platform.reapit.cloud/webhooks/signing/{id}
+    public_key_endpoint_auth: bearer token required; an app can only fetch its own keys
+    public_key_format: JWK set with crv Ed25519 and base64url-encoded x
+    verification: >-
+      Concatenate the timestamp (segment 3) with the RAW request body (no
+      delimiter) and verify segment 4 against the app's public key using Ed25519.
+    legacy: >-
+      A legacy symmetric signing method exists and is documented as obsolescent;
+      asymmetric signing should be used.
+  source_ips:
+  - 18.133.192.77
+  - 18.133.96.95
+  - 18.132.113.124
+  source_ip_note: >-
+    Static Elastic IPs used for webhook egress in eu-west-2 across multiple AZs.
+    Reapit commits to documenting future changes here in advance where possible.
+  endpoint_requirements:
+  - publicly reachable URI using the https scheme
+  - accepts POST
+  - accepts an application/json request body
+  - 'AWS API Gateway execute-api DNS namespace is NOT supported — use a custom domain'
+delivery:
+  retry_policy: exponential backoff
+  max_attempts: 6
+  schedule:
+  - attempt: 2
+    delay: at least 60s after attempt 1
+  - attempt: 3
+    delay: at least 120s after attempt 2
+  - attempt: 4
+    delay: at least 300s after attempt 3
+  - attempt: 5
+    delay: at least 600s after attempt 4
+  - attempt: 6
+    delay: at least 900s after attempt 5; no further attempts
+  no_retry_when:
+  - the event is associated with Sandbox data
+  - the receiving endpoint returned a 4xx response (treated as misconfiguration)
+  ordering: not guaranteed — use eventTime to order
+  duplicates: 'at-least-once: a single event may produce more than one notification'
+  recommended_handling: respond fast (202 Accepted) and process asynchronously
+  billing: webhook-originated requests count toward developer analytics and billing
+testing:
+  ping: >-
+    The developer portal Ping function sends an example payload to the
+    configured URL for the selected topic.
+  ping_customer_id: webhook-test
+  ping_entity_id: 9e7e4181-6210-49ea-abf5-d5ce16d23647
+  recommendation: register webhooks inactive, Ping first, then test against SBOX
+envelope:
+  SendAttempts: number of attempts it took to deliver the message
+  eventId: unique identifier for the event
+  entityId: identifier of the entity — unique per customer database, NOT globally unique
+  customerId: the Reapit customer the event belongs to
+  eventTime: UTC timestamp the event was emitted
+  topicId: the topic (see topics below)
+  new: new version of the entity; null when the entity was deleted or archived
+  old: previous version; null on .created events
+  diff: field-level diff; only populated on .modified events
+  schema_note: >-
+    new/old/diff use the same schema as the corresponding REST endpoint, e.g.
+    contacts.modified carries the GET /contacts shape. Types are published as
+    @reapit/foundations-ts-definitions.
+  metadata_note: app-specific metadata is NOT currently included in webhook payloads
+topic_count: 55
+topics:
+- topic: application.install
+  scope: none
+  description: A customer installs the application in the AppMarket.
+  note: payload carries applicationId (auth client id) and internalAppId (portal app id)
+- topic: application.uninstall
+  scope: none
+  description: A customer uninstalls the application in the AppMarket.
+- topic: applicants.created
+  scope: applicants.read
+  description: A new applicant is created.
+- topic: applicants.modified
+  scope: applicants.read
+  description: An applicant, or any of its associated contacts, is modified.
+- topic: appointments.cancelled
+  scope: appointments.read
+  description: An appointment is created as cancelled or an existing one is cancelled.
+- topic: appointments.confirmed
+  scope: appointments.read
+  description: All required parties have confirmed attendance.
+- topic: appointments.created
+  scope: appointments.read
+  description: A new appointment is created.
+- topic: appointments.modified
+  scope: appointments.read
+  description: An existing appointment is modified.
+- topic: companies.created
+  scope: companies.read
+  description: A new company is created.
+- topic: companies.modified
+  scope: companies.read
+  description: An existing company is modified.
+- topic: contacts.created
+  scope: contacts.read
+  description: A new contact is created.
+- topic: contacts.landlorddetails.updated
+  scope: contacts.read
+  description: An agent updates a landlord's Making Tax Digital consent status.
+- topic: contacts.modified
+  scope: contacts.read
+  description: An existing contact is modified.
+- topic: contacts.optedout
+  scope: contacts.read
+  description: Marketing consent is set to or changed to deny.
+- topic: conveyancing.modified
+  scope: conveyancing.read
+  description: A conveyancing (sales progression) entity is modified.
+- topic: documents.created
+  scope: documents.read
+  description: A new document is created.
+- topic: documents.modified
+  scope: documents.read
+  description: An existing document is modified.
+- topic: enquiries.accepted
+  scope: enquiries.read
+  description: An enquiry status changes to added.
+- topic: enquiries.created
+  scope: enquiries.read
+  description: A new enquiry is created.
+- topic: enquiries.modified
+  scope: enquiries.read
+  description: An existing enquiry is modified.
+- topic: enquiries.rejected
+  scope: enquiries.read
+  description: An enquiry status changes to rejected.
+- topic: identitychecks.created
+  scope: identitychecks.read
+  description: A new identity check is created against an existing contact.
+- topic: identitychecks.modified
+  scope: identitychecks.read
+  description: An existing identity check is modified.
+- topic: landlords.created
+  scope: landlords.read
+  description: A new landlord is created.
+- topic: landlords.modified
+  scope: landlords.read
+  description: A landlord, or any of its associated contacts, is modified.
+- topic: offers.accepted
+  scope: offers.read
+  description: An offer is created accepted or an existing offer becomes accepted.
+- topic: offers.created
+  scope: offers.read
+  description: A new offer is created.
+- topic: offers.modified
+  scope: offers.read
+  description: An existing offer is modified.
+- topic: offers.rejected
+  scope: offers.read
+  description: An offer is created rejected or an existing offer becomes rejected.
+- topic: offers.withdrawn
+  scope: offers.read
+  description: An offer is created withdrawn or an existing offer becomes withdrawn.
+- topic: offices.created
+  scope: offices.read
+  description: A new office is created.
+- topic: offices.modified
+  scope: offices.read
+  description: An existing office is modified.
+- topic: properties.created
+  scope: properties.read
+  description: A new property is created.
+- topic: properties.modified
+  scope: properties.read
+  description: An existing property is modified.
+- topic: properties.selling.askingpricechanged
+  scope: properties.read
+  description: The asking price of a sales property is changed.
+- topic: properties.selling.completed
+  scope: properties.read
+  description: A sales property reaches completed status.
+- topic: properties.selling.exchanged
+  scope: properties.read
+  description: A sales property reaches exchanged status.
+- topic: properties.selling.withdrawn
+  scope: properties.read
+  description: A sales property is withdrawn.
+- topic: properties.selling.instructed
+  scope: properties.read
+  description: A sales property reaches forSale or forSaleUnavailable status.
+- topic: properties.selling.lostinstruction
+  scope: properties.read
+  description: A sales property enters a lost-instruction state.
+- topic: properties.selling.underoffer
+  scope: properties.read
+  description: A sales property reaches underOffer or underOfferUnavailable status.
+- topic: propertyimages.created
+  scope: properties.read
+  description: A new property image is created.
+- topic: propertyimages.modified
+  scope: properties.read
+  description: An existing property image is modified.
+- topic: referrals.created
+  scope: referrals.read
+  description: A new referral is created.
+- topic: referrals.modified
+  scope: referrals.read
+  description: An existing referral is modified.
+- topic: tenancies.created
+  scope: tenancies.read
+  description: A new tenancy is created.
+- topic: tenancies.modified
+  scope: tenancies.write
+  description: An existing tenancy is modified.
+  note: documented as requiring tenancies.write, unlike every other .modified topic
+- topic: vendors.created
+  scope: vendors.read
+  description: Vendor information is associated with a sales property for the first time.
+- topic: vendors.modified
+  scope: vendors.read
+  description: Vendor information, or an associated vendor contact, is modified.
+- topic: worksorders.cancelled
+  scope: worksorders.read
+  description: A works order is created cancelled or becomes cancelled.
+- topic: worksorders.complete
+  scope: worksorders.read
+  description: A works order is created complete or becomes complete.
+- topic: worksorders.modified
+  scope: worksorders.read
+  description: An existing works order is modified.
+- topic: worksorders.raised
+  scope: worksorders.read
+  description: A works order is created raised or becomes raised.
+domains:
+- applicants
+- appointments
+- companies
+- contacts
+- conveyancing
+- documents
+- enquiries
+- identity checks
+- landlords
+- offers
+- offices
+- properties
+- property images
+- referrals
+- tenancies
+- vendors
+- works orders
+- appmarket application lifecycle
+inbound_events:
+  name: Foundations Notifications API
+  direction: inbound (third party -> Reapit products)
+  endpoint: POST https://platform.reapit.cloud/notifications
+  scope: negotiators.read
+  targets: '{ "targets": { "negotiatorId": [...] } } — multiple ids fan out'
+  docs: https://foundations-documentation.reapit.cloud/api/notifications
+  note: >-
+    The counterpart of webhooks — pushes an app's real-time events INTO the CRM
+    for display to named negotiators. Sandbox testing needs an active Developer
+    Edition subscription and a dedicated negotiator id; display inside a live
+    customer CRM must be enabled by Reapit support at the customer's request.

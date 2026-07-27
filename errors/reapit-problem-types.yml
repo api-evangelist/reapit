@@ -1,0 +1,141 @@
+generated: '2026-07-26'
+method: searched
+source: https://foundations-documentation.reapit.cloud/api/api-documentation#errors
+format: custom-json
+rfc9457: false
+description: >-
+  Reapit publishes a single, uniform error envelope for the whole Foundations
+  REST platform rather than per-endpoint error codes. It is NOT RFC 9457
+  application/problem+json — there is no type URI, no title and no instance;
+  it is a four-field JSON object (statusCode, dateTime, description, errors).
+  The interesting part is the errors[] array, which is populated only for 422
+  and carries field-level validation failures, and the fact that every response
+  — success or failure — carries a request id in x-amzn-RequestId that Reapit
+  asks integrators to quote when reporting a bug.
+envelope:
+  content_type: application/json
+  fields:
+    statusCode:
+      type: integer
+      description: The HTTP status code issued by this response.
+    dateTime:
+      type: string
+      format: date-time
+      description: UTC timestamp of when the error response was issued.
+    description:
+      type: string
+      description: Human-readable message with details about the error.
+    errors:
+      type: array
+      description: >-
+        Collection of validation issues with the supplied payload. Populated
+        only for 422 Unprocessable Entity responses.
+      items:
+        field: the offending property name
+        message: what is wrong with it
+  example:
+    errors:
+    - field: type
+      message: The enum value provided for AreaType is incorrect
+    statusCode: 422
+    dateTime: '2020-02-11T13:32:03.6759302Z'
+    description: One or more validation failures have occurred. Please refer to Errors
+      list for details
+correlation:
+  header: x-amzn-RequestId
+  present_on: every response, successful or not
+  guidance: quote this id when reporting a bug via the Reapit Service Desk
+problems:
+- status: 400
+  title: Bad Request
+  description: >-
+    The request was not understood by the server, generally due to bad request
+    syntax. Also returned for a malformed metadata filter expression.
+  remediation: Check syntax, URL encoding and the metadata filter expression format.
+- status: 401
+  title: Unauthorized
+  description: >-
+    The provided authentication credentials are incorrect or not present —
+    generally a missing Authorization header.
+  remediation: >-
+    Obtain a fresh bearer token from Reapit Connect (tokens live 3600s) and send
+    it as `Authorization: Bearer <token>`.
+- status: 403
+  title: Forbidden
+  description: >-
+    The credentials do not provide sufficient scope to fulfil the request. The
+    app was granted a narrower permission set at install time than the operation
+    needs.
+  remediation: >-
+    Request the missing permission on an app revision (via partners@reapit.com),
+    then have every installed customer accept the new permission.
+  see_also: scopes/reapit-scopes.yml
+- status: 404
+  title: Not Found
+  description: The requested resource was not found.
+  remediation: >-
+    Remember ids are unique only within one customer database — confirm the
+    reapit-customer header addresses the right tenant.
+- status: 412
+  title: Precondition Failed
+  description: >-
+    Optimistic concurrency control rejected the request: the eTag supplied in
+    If-Match does not match the server's current version of the resource.
+  remediation: Re-fetch the resource, replay the change onto the new eTag, retry the PATCH.
+  see_also: conventions/reapit-conventions.yml
+- status: 422
+  title: Unprocessable Entity
+  description: >-
+    A validation error occurred. Raised for POST/PATCH payload validation and
+    for metadata that fails the JSON Schema registered for its entityType.
+  remediation: Read errors[] — each entry names the failing field and the reason.
+- status: 429
+  title: Too Many Requests
+  description: >-
+    The application exceeded a rate limit (20 req/s, 5 concurrent per customer,
+    or 250,000 per day).
+  remediation: >-
+    Back off and retry. No RateLimit-* headers are published, so budget must be
+    tracked client-side.
+  see_also: rate-limits/reapit-rate-limits.yml
+- status: 500
+  title: Internal Error
+  description: The request triggered an unexpected error, which Reapit logs and investigates.
+  remediation: Retry; if persistent, raise a ticket quoting the x-amzn-RequestId.
+success_codes:
+- status: 200
+  title: OK
+  description: The request has been fulfilled.
+- status: 201
+  title: Created
+  description: >-
+    A new resource has been created. The body is empty; the new resource's
+    location is in the Location header.
+- status: 204
+  title: No Content
+  description: >-
+    The request has been fulfilled (typically a PATCH) and there is nothing to
+    return. Re-fetch with GET to see the new state.
+surface_variants:
+  mcp:
+    source: https://foundations-documentation.reapit.cloud/api/mcp-alpha
+    errors:
+    - status: 400
+      meaning: bad request — e.g. a client-credentials token without the reapit-customer header
+    - status: 401
+      meaning: missing, expired or invalid token
+    - status: 403
+      meaning: valid token lacking the agencyCloud/mcp.access scope
+    - status: 502
+      meaning: upstream verification failure (identity provider unreachable)
+  webhooks:
+    note: >-
+      A 4xx from the receiving endpoint suppresses all retries (treated as
+      misconfiguration); 5xx and timeouts are retried up to 6 times with
+      exponential backoff.
+    see_also: asyncapi/reapit-foundations-webhooks.yml
+troubleshooting_docs:
+- https://foundations-documentation.reapit.cloud/troubleshooting/platform-api
+- https://foundations-documentation.reapit.cloud/troubleshooting/authentication-issues
+- https://foundations-documentation.reapit.cloud/troubleshooting/accessing-customer-data
+- https://foundations-documentation.reapit.cloud/troubleshooting/reapit-connect

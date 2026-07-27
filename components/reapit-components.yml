@@ -1,0 +1,111 @@
+generated: '2026-07-26'
+method: searched
+source: >-
+  https://foundations-documentation.reapit.cloud/app-development/elements ,
+  https://foundations-documentation.reapit.cloud/app-development/web ,
+  https://foundations-documentation.reapit.cloud/app-development/vite-template ,
+  https://foundations-documentation.reapit.cloud/app-development/create-react-app-template
+  , and the npm registry (@reapit scope)
+description: >-
+  Reapit's client-side story is unusually developed for a CRM vendor, because
+  AppMarket apps do not sit beside the CRM — they are embedded INSIDE it, so
+  they have to look native. Reapit therefore publishes its own React design
+  system (Elements) that its own products use, a ShadCN/ui-based companion
+  (Elemental), a drop-in "Login with Reapit" auth button, and two starter
+  templates. These are UI component libraries, not server SDKs; the SDK packages
+  live in packages/reapit-packages.yml. The design system and component library
+  documentation are themselves exposed over MCP for coding agents.
+families:
+- family: Reapit Elements
+  package: "@reapit/elements"
+  version: 5.1.0
+  registry: npm
+  install: npm install @reapit/elements
+  framework: React
+  official: true
+  description: >-
+    The React implementation of Reapit's Design System. Reapit's own products
+    use it extensively, so an AppMarket app built with it feels native inside
+    AgencyCloud and Property Cloud.
+  documentation:
+    design_system: https://design.reapit.cloud
+    storybook: https://elements.reapit.cloud
+    guide: https://foundations-documentation.reapit.cloud/app-development/elements
+  versions:
+  - version: v5
+    state: current
+    note: >-
+      A significant rewrite. Many v4 components remain available but deprecated
+      so consumers can migrate incrementally; codemods are provided where
+      feasible. The deprecated v4 components are planned for removal at the next
+      major release.
+  - version: v4
+    state: maintenance
+    note: security patches and regressions only until the next major, then end-of-life
+    docs: https://v4.elements.reapit.com.au/?path=/docs/introduction--docs
+  - version: v3
+    state: end-of-life
+    migration: https://elements.dev.paas.reapit.cloud/?path=/docs/introduction--docs#migrating-from-v2
+  - version: v2
+    state: end-of-life
+  - version: v1
+    state: end-of-life
+  agent_access:
+    mcp: true
+    note: >-
+      The Design System and component library documentation are both available
+      via MCP; the Elements Getting Started guide covers granting agents access.
+- family: Reapit Elemental
+  package: "@reapit/elemental"
+  version: 1.2.4
+  registry: npm
+  install: npm install @reapit/elemental
+  framework: React (ShadCN/ui)
+  official: true
+  description: >-
+    A complementary React design-system package built on ShadCN/ui, intended to
+    work alongside @reapit/elements.
+- family: Login with Reapit
+  package: "@reapit/login-with-reapit"
+  version: 1.0.6
+  registry: npm
+  install: npm install @reapit/login-with-reapit
+  framework: React
+  official: true
+  description: >-
+    A single drop-in component that renders the Reapit sign-in button and runs
+    the Reapit Connect authorization-code flow — the smallest possible path to
+    authenticated embedding.
+  docs: https://foundations-documentation.reapit.cloud/app-development/web
+templates:
+- name: Vite Template
+  package: "@reapit/foundations-react-vite-template"
+  repo: https://github.com/reapit/foundations-react-vite-template
+  docs: https://foundations-documentation.reapit.cloud/app-development/vite-template
+  status: >-
+    In migration — Reapit notes the Vite template is being moved to Elements v5.
+- name: Create React App Template
+  package: "@reapit/cra-template-foundations"
+  version: 5.1.9
+  install: npx create-react-app my-app --template @reapit/foundations
+  docs: https://foundations-documentation.reapit.cloud/app-development/create-react-app-template
+embedded_surfaces:
+- name: AppMarket web application inside AgencyCloud
+  mechanism: >-
+    Web apps are hosted inside the AgencyCloud desktop CRM and drive it through
+    the agencycloud: custom URI scheme (the Desktop API) — load a property,
+    open matching, jump to a diary, open a works order.
+  docs: https://foundations-documentation.reapit.cloud/api/desktop-api
+  note: >-
+    This is the component story's other half: the app renders with Elements so
+    it looks native, and calls the Desktop API so it behaves native.
+loaders: []
+loaders_note: >-
+  Reapit publishes no script-tag / web-component loader — every component family
+  is a React npm package. There are no framework-agnostic custom elements, no
+  hosted iframe widgets and no embeddable dashboards for non-React stacks.
+third_party:
+- package: "@iamproperty/reapit-elements"
+  registry: npm
+  official: false
+  note: a third-party fork/wrapper of Reapit Elements published by iamproperty

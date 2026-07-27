@@ -1,0 +1,339 @@
+generated: '2026-07-26'
+method: derived
+source: >-
+  mcp/reapit-mcp.yml (tool names published at
+  https://foundations-documentation.reapit.cloud/api/mcp-alpha) bound to
+  graphql/reapit-foundations.graphql (live anonymous introspection of
+  https://graphql.reapit.cloud/graphql on 2026-07-26)
+description: >-
+  Reapit is the unusual case where the MCP surface is auth-gated but the GraphQL
+  surface is not. An anonymous tools/list against the Foundations MCP server
+  returns 401, yet full GraphQL introspection against graphql.reapit.cloud
+  succeeds and returns 190 types, 63 query fields and 58 mutation fields. That
+  makes GraphQL — not REST — the anchor for this crosswalk: each published MCP
+  tool is bound to the GraphQL operation that carries its REAL argument
+  contract, which an agent can introspect today. The REST platform is the
+  ultimate backing store for all three surfaces (Reapit describes GraphQL as a
+  proxy over the REST platform "with no extension or deviation"), but its
+  Swagger document at platform.reapit.cloud/docs requires a bearer token, so no
+  operationIds could be harvested and none are invented here.
+surfaces:
+  rest:
+    base_url: https://platform.reapit.cloud
+    spec: null
+    spec_status: >-
+      gated — platform.reapit.cloud/docs returns 200 with {"errorMessage":"Could
+      not load Swagger documentation"} anonymously; /openapi.json, /swagger.json,
+      /api-docs, /redoc and the host root all return 401. No operationIds
+      available.
+    docs: https://foundations-documentation.reapit.cloud/api/api-documentation
+  graphql:
+    endpoint: https://graphql.reapit.cloud/graphql
+    introspection: open
+    sdl: graphql/reapit-foundations.graphql
+    queries: 63
+    mutations: 58
+    types: 190
+    note: >-
+      Introspection is anonymous, but EXECUTING an operation requires both an
+      `authorization` header carrying the Reapit Connect idToken and a
+      `reapit-connect-token` header carrying the accessToken — which means only
+      the authorization-code flow works; client-credentials clients cannot use
+      GraphQL. Metadata and Metadata Schema are deliberately absent from the
+      schema because arbitrary JSON cannot be strongly typed.
+    docs: https://foundations-documentation.reapit.cloud/api/graphql
+  mcp:
+    url: https://foundations-mcp.iaas.reapit.cloud/mcp
+    transport: streamable-http
+    tools_list: gated
+    tools_list_status: 401 {"error":"No authorization header provided"}
+    tools_published_in_docs: 43
+    manifest: mcp/reapit-mcp.yml
+    docs: https://foundations-documentation.reapit.cloud/api/mcp-alpha
+binding_legend:
+  graphql: the tool's input contract is that GraphQL field's arguments (introspectable)
+  confidence: high = name and domain map 1:1; medium = semantics match but fan-out
+    or argument shape differs; low = inferred from domain only
+crosswalk:
+- tool: appointments_search
+  category: appointments
+  graphql: [GetAppointments]
+  binding: graphql
+  confidence: high
+  note: >-
+    GetAppointments requires start and end (String!) plus optional pageSize,
+    pageNumber, sortBy, id, typeId, negotiatorId, officeId, propertyId,
+    includeCancelled, includeUnconfirmed and embed[AppointmentQueryEmbed].
+- tool: appointments_get_by_id
+  category: appointments
+  graphql: [GetAppointmentById]
+  binding: graphql
+  confidence: high
+- tool: appointments_create
+  category: appointments
+  graphql: [CreateAppointment]
+  binding: graphql
+  confidence: high
+- tool: appointments_update
+  category: appointments
+  graphql: [UpdateAppointment]
+  binding: graphql
+  confidence: high
+- tool: appointments_get_types
+  category: configuration
+  graphql: [GetConfigurationsByType]
+  binding: graphql
+  confidence: medium
+  note: GraphQL exposes one generic lookup; the tool is the appointmentTypes slice of ConfigurationType.
+- tool: appointments_get_followup_responses
+  category: configuration
+  graphql: [GetConfigurationsByType]
+  binding: graphql
+  confidence: medium
+  note: the followUpResponses slice of ConfigurationType.
+- tool: companies_get_types
+  category: configuration
+  graphql: [GetConfigurationsByType]
+  binding: graphql
+  confidence: medium
+  note: the companyTypes slice of ConfigurationType.
+- tool: get_departments
+  category: configuration
+  graphql: [GetDepartments]
+  binding: graphql
+  confidence: high
+- tool: properties_search
+  category: properties
+  graphql: [GetProperties]
+  binding: graphql
+  confidence: high
+- tool: properties_get_by_id
+  category: properties
+  graphql: [GetPropertyById]
+  binding: graphql
+  confidence: high
+- tool: properties_key_movements_list
+  category: properties
+  graphql: [GetKeyMovements, GetKeyMovement, GetPropertyKeys, GetKey]
+  binding: graphql
+  confidence: medium
+  note: >-
+    GetKeyMovements takes propertyId and keyId (both ID!); listing a property's
+    keys first requires GetPropertyKeys(propertyId).
+- tool: properties_key_movements_create
+  category: properties
+  graphql: [CreateKeyMovement]
+  binding: graphql
+  confidence: high
+  note: key check-out.
+- tool: properties_key_movements_check_in
+  category: properties
+  graphql: [UpdateKeyMovement]
+  binding: graphql
+  confidence: medium
+  note: check-in is modelled in GraphQL as an update to the existing key movement.
+- tool: contacts_search
+  category: contacts
+  graphql: [GetContacts]
+  binding: graphql
+  confidence: high
+- tool: contacts_get_by_id
+  category: contacts
+  graphql: [GetContactById]
+  binding: graphql
+  confidence: high
+- tool: contacts_create
+  category: contacts
+  graphql: [CreateContact]
+  binding: graphql
+  confidence: high
+- tool: contacts_update
+  category: contacts
+  graphql: [UpdateContact]
+  binding: graphql
+  confidence: high
+- tool: applicants_search
+  category: applicants
+  graphql: [GetApplicants]
+  binding: graphql
+  confidence: high
+- tool: applicants_create
+  category: applicants
+  graphql: [CreateApplicant]
+  binding: graphql
+  confidence: high
+- tool: applicants_update
+  category: applicants
+  graphql: [UpdateApplicant]
+  binding: graphql
+  confidence: high
+- tool: companies_search
+  category: companies
+  graphql: [GetCompanies]
+  binding: graphql
+  confidence: high
+- tool: offices_search
+  category: offices
+  graphql: [GetOffices]
+  binding: graphql
+  confidence: high
+- tool: offices_get_by_id
+  category: offices
+  graphql: [GetOfficeById]
+  binding: graphql
+  confidence: high
+- tool: negotiators_search
+  category: negotiators
+  graphql: [GetNegotiators]
+  binding: graphql
+  confidence: high
+- tool: negotiators_get_by_id
+  category: negotiators
+  graphql: [GetNegotiatorById]
+  binding: graphql
+  confidence: high
+- tool: areas_search
+  category: areas
+  graphql: [GetAreas]
+  binding: graphql
+  confidence: high
+- tool: offers_search
+  category: offers
+  graphql: [GetOffers]
+  binding: graphql
+  confidence: high
+- tool: landlords_search
+  category: landlords
+  graphql: [GetLandlords]
+  binding: graphql
+  confidence: high
+- tool: landlords_get_by_id
+  category: landlords
+  graphql: [GetLandlordById]
+  binding: graphql
+  confidence: high
+- tool: vendors_search
+  category: vendors
+  graphql: [GetVendors]
+  binding: graphql
+  confidence: high
+- tool: vendors_get_by_id
+  category: vendors
+  graphql: [GetVendorById]
+  binding: graphql
+  confidence: high
+- tool: tenancies_search
+  category: tenancies
+  graphql: [GetTenancies]
+  binding: graphql
+  confidence: high
+- tool: tenancies_get_by_id
+  category: tenancies
+  graphql: [GetTenancyById]
+  binding: graphql
+  confidence: high
+mcp_only:
+- tool: get_directions
+  reason: >-
+    No driving-directions field exists anywhere in the GraphQL schema and no
+    directions endpoint is documented in REST. This is a genuine MCP-side
+    capability (likely a server-side composite over a mapping provider), not a
+    projection of the CRM data core.
+- tool: properties_appraisals_list
+  reason: no appraisal type or field exists in the GraphQL schema (grep "appraisal" = 0 hits).
+- tool: properties_appraisals_get
+  reason: no appraisal type or field exists in the GraphQL schema.
+- tool: properties_appraisals_create
+  reason: no appraisal type or field exists in the GraphQL schema.
+- tool: properties_appraisals_update
+  reason: no appraisal type or field exists in the GraphQL schema.
+- tool: appointments_list_open_house_attendees
+  reason: >-
+    GraphQL models attendees only as the attendee sub-object of an appointment;
+    there is no open-house attendee collection operation.
+- tool: appointments_create_open_house_attendee
+  reason: no open-house attendee operation in the GraphQL schema.
+- tool: appointments_update_open_house_attendee
+  reason: no open-house attendee operation in the GraphQL schema.
+- tool: appointments_delete_open_house_attendee
+  reason: no open-house attendee operation in the GraphQL schema.
+- tool: get_property_attribute_options
+  reason: >-
+    Property attribute options are not exposed through ConfigurationType in the
+    GraphQL schema; the equivalent lives in the REST configuration service.
+graphql_only:
+- capability: conveyancing / sales progression
+  fields: [GetConveyancing, GetConveyancingById, GetConveyancingChain, UpdateConveyancing,
+    CreateDownwardLinkModel, DeleteDownwardLinkModel, CreateUpwardLinkModel, DeleteUpwardLinkModel]
+  note: chain management has no MCP tool at all.
+- capability: documents
+  fields: [GetDocuments, GetDocumentById, CreateDocument, UpdateDocument, DeleteDocument]
+- capability: enquiries
+  fields: [GetEnquiries, GetEnquiryById, CreateEnquiry]
+- capability: identity checks (AML/KYC)
+  fields: [GetIdentityChecks, GetIdentityCheckById, CreateIdentityCheck, UpdateIdentityCheck]
+- capability: journal entries
+  fields: [GetJournalEntries, CreateJournalEntry]
+- capability: tasks
+  fields: [GetTasks, GetTaskById, CreateTask, UpdateTask]
+- capability: sources
+  fields: [GetSources, GetSourceById, CreateSource, UpdateSource]
+- capability: property images
+  fields: [GetPropertyImages, GetPropertyImageById, CreatePropertyImage, UpdatePropertyImage,
+    DeletePropertyImage]
+- capability: works orders
+  fields: [GetWorksOrders, GetWorksOrdersById, GetWorksOrderItems, GetWorksOrderItemById,
+    CreateWorksOrder, UpdateWorksOrder, CreateWorksOrderItem, UpdateWorksOrderItem, DeleteWorksOrderItem]
+- capability: tenancy checks
+  fields: [GetTenancyChecks, GetTenancyCheckById, CreateTenancyCheck, UpdateTenancyCheck,
+    DeleteTenancyCheck, GetTenancyRelationships]
+- capability: relationship graph (applicant/landlord/vendor ↔ contact & company)
+  fields: [GetApplicantRelationships, GetApplicantRelationshipById, CreateApplicantRelationship,
+    DeleteApplicantRelationship, GetLandlordRelationships, GetLandlordRelationshipById,
+    CreateLandlordRelationship, DeleteLandlordRelationship, GetVendorRelationships,
+    GetVendorRelationshipById, CreateVendorRelationship, DeleteVendorRelationship]
+- capability: writes for domains MCP only reads
+  fields: [CreateArea, UpdateArea, CreateCompany, UpdateCompany, CreateOffer, UpdateOffer,
+    CreateOffice, UpdateOffice, CreateProperty, UpdateProperty, CreateNegotiator,
+    UpdateNegotiator, CreateLandlord, UpdateLandlord, UpdateVendor, CreateTenancy, CreateKey]
+  note: >-
+    The MCP alpha is read-mostly outside appointments/contacts/applicants — it
+    can search offers, properties, landlords, vendors and tenancies but cannot
+    create or update them, while GraphQL can.
+rest_only:
+- capability: metadata and metadata schema
+  note: >-
+    The /metadata and /metadataSchema services (custom fields, custom entities,
+    JSON-Schema validation, $eq/$ne/$gt/$lt/$gte/$lte/$in/$nin/$con filtering)
+    are explicitly excluded from GraphQL because arbitrary JSON cannot be
+    strongly typed, and have no MCP tool.
+- capability: webhooks management + signing keys
+  note: 'REST only: POST/GET/PATCH/DELETE on /webhooks and GET /webhooks/signing/{id}.'
+- capability: notifications (inbound push into Reapit products)
+  note: 'REST only: POST /notifications.'
+- capability: pre-signed file upload
+  note: 'REST only: POST /documents/signedUrl, /propertyImages/signedUrl, /identityChecks/signedUrl.'
+- capability: certificates, invoices, referrals, property alarm data, transactions
+  note: >-
+    Named in the platform permissions glossary as resource domains but absent
+    from both the GraphQL schema and the MCP tool list.
+coverage:
+  mcp_tools_published: 43
+  mcp_tools_bound_to_graphql: 33
+  mcp_only: 10
+  graphql_operations_total: 121
+  graphql_queries: 63
+  graphql_mutations: 58
+  graphql_operations_with_a_tool: 36
+  graphql_operations_without_a_tool: 85
+  rest_operations_total: null
+  rest_operations_note: unknown — the Swagger document is bearer-gated
+divergence_summary: >-
+  Three surfaces, none a superset. GraphQL is the widest machine-readable
+  surface Reapit exposes publicly (121 operations) but excludes metadata,
+  webhooks and notifications by design and cannot be used by machine-to-machine
+  clients. MCP is the narrowest (43 tools, read-mostly) but is the only surface
+  with appraisals, open-house attendees and driving directions. REST is the
+  superset in principle and the only surface with metadata, webhooks,
+  notifications and pre-signed uploads — and the only one with no public
+  machine-readable contract.

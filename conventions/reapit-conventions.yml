@@ -1,0 +1,244 @@
+generated: '2026-07-26'
+method: searched
+source: https://foundations-documentation.reapit.cloud/api/api-documentation
+description: >-
+  The cross-cutting request/response semantics that apply to every Foundations
+  REST operation rather than to any one endpoint. Reapit is an unusually
+  disciplined implementation for a vertical CRM vendor: it is an explicit
+  Richardson-maturity-level-3 HAL hypermedia API with mandatory dated
+  versioning, mandatory optimistic concurrency on every update, a documented
+  paging contract, a documented validation-error envelope, and a metadata system
+  that lets an integrator extend the CRM schema without hosting a datastore.
+  Captured here because none of it is expressible in the (bearer-gated) Swagger.
+base_url: https://platform.reapit.cloud
+auth_url: https://connect.reapit.cloud
+api_style: REST over HTTPS, JSON request and response bodies, HAL hypermedia
+maturity: Richardson Maturity Model level 3 (hypermedia controls)
+
+authentication:
+  scheme: OAuth 2.0 bearer token issued by Reapit Connect (OpenID Connect)
+  header: 'Authorization: Bearer <access token>'
+  flows: [authorizationCode, clientCredentials]
+  token_lifetime_seconds: 3600
+  tenant_header:
+    name: reapit-customer
+    required_for: client-credentials (machine-to-machine) requests
+    note: >-
+      Set to the customer's unique id, visible once that customer has installed
+      the app. SBOX addresses the sandbox. User-context tokens carry the
+      customer code themselves.
+  detail: authentication/reapit-authentication.yml
+
+versioning:
+  scheme: date-based, carried in a required request header
+  header: api-version
+  current: '2020-01-31'
+  required: true
+  breaking_change_definition:
+  - renaming or removing an existing field or endpoint
+  - changing the URL structure of an existing endpoint
+  - changing the filters an existing endpoint provides
+  - changing error response codes or messages
+  - modifying or adding a new validation to an existing resource
+  - changing the data type of an existing field
+  - requiring a parameter that was not previously required
+  detail: lifecycle/reapit-lifecycle.yml
+  docs: https://foundations-documentation.reapit.cloud/api/api-documentation#versioning
+
+idempotency:
+  supported: true
+  mechanism: RFC 7232 conditional requests (ETag / If-Match) — NOT an Idempotency-Key header
+  key_header: If-Match
+  key_source: >-
+    The eTag returned in the response header of any singular GET, also mirrored
+    into the body as the _eTag attribute. It must be sent back verbatim,
+    including the surrounding quotation marks.
+  applies_to: every PATCH (update) request
+  required: true
+  conflict_behavior: >-
+    If the supplied eTag does not match the server's current version the request
+    is rejected with 412 Precondition Failed and the client must re-fetch and
+    replay. This is optimistic concurrency control — it makes an update safe to
+    replay against a known version and prevents lost updates, but it does NOT
+    de-duplicate retried POSTs the way an Idempotency-Key would.
+  no_idempotency_key: >-
+    Reapit publishes no Idempotency-Key (or equivalent) header, so a retried
+    POST after a network timeout can create a duplicate resource. Integrators
+    must de-duplicate client-side, typically by searching for the record before
+    re-posting.
+  safe_methods: [GET, HEAD]
+  docs: https://foundations-documentation.reapit.cloud/api/api-documentation#optimistic-concurrency
+  standard: RFC 7232
+
+pagination:
+  style: offset (page number)
+  enforced: true
+  enforced_note: top-level collection endpoints require the standard paging query strings
+  request_params:
+    pageSize: default 25, maximum 100 unless otherwise specified
+    pageNumber: 1-based page index
+    sortBy: sort expression
+  response_fields:
+    pageSize: requested records per page
+    pageNumber: the page this response represents
+    pageCount: records actually on this page
+    totalPageCount: total pages available
+    totalCount: total resources matching the request
+    _embedded: the list of resources in this page
+  example: GET /contacts?pageSize=10&pageNumber=2
+  graphql_equivalent: 'PagedResult* types with the same pageSize/pageNumber arguments'
+
+filtering:
+  boolean_params: >-
+    Omitting a boolean query parameter applies NO filter — it is not equivalent
+    to passing false. This is called out explicitly in the docs as a common
+    integrator mistake.
+  url_encoding: parameters must be URL-encoded
+  metadata_filter:
+    param: metadata
+    syntax: 'metadata.<fieldName> <operation> <criteria>'
+    repeatable: true (expressions are additive)
+    case_sensitive: false
+    dot_notation: supported for nested structures
+    operations:
+      $eq: equals — all data types
+      $ne: not equals — all data types
+      $gt: greater than — datetime and numeric
+      $lt: less than — datetime and numeric
+      $gte: greater than or equal — datetime and numeric
+      $lte: less than or equal — datetime and numeric
+      $in: in a comma-separated list — string, datetime, numeric
+      $nin: not in a comma-separated list — string, datetime, numeric
+      $con: array contains any of a comma-separated list
+    malformed_expression: 400 Bad Request describing the problem
+
+hypermedia:
+  format: HAL (Hypertext Application Language)
+  links_field: _links
+  links_shape: 'dictionary of relation -> { href } , including self'
+  embedded_field: _embedded
+  note: >-
+    Every GET response carries _links describing which related data exists and
+    the exact query needed to fetch it, e.g. a contact links to documents,
+    identityChecks, offices and negotiators.
+
+field_expansion:
+  param: embed
+  repeatable: true
+  example: GET /contacts/OXF18000001/?embed=offices&embed=negotiators
+  response_location: the _embedded collection of the resource
+  billing_note: >-
+    Requests triggered by an embed still count toward usage statistics and
+    billing exactly as if the application had issued them directly.
+  graphql_equivalent: 'the embed: [<Entity>QueryEmbed] argument on each query field'
+
+metadata:
+  supported: true
+  inline: >-
+    Most POST and PATCH endpoints accept a metadata attribute carrying an
+    arbitrary JSON document, automatically returned on subsequent GETs for the
+    same app.
+  dedicated_endpoints: /metadata
+  custom_entities: >-
+    Supplying a custom entityType (and optionally your own entityId) turns
+    Foundations into a simple datastore for app-specific entities, removing the
+    need to host one.
+  validation: >-
+    /metadataSchema endpoints accept a JSON Schema per entityType; non-
+    conforming submissions fail with 422 and a list of reasons.
+  isolation: metadata is scoped to a single customer and not visible across customers
+  caution: >-
+    Reapit explicitly advises against storing sensitive information (PII, bank
+    accounts) in metadata.
+  webhook_gap: app metadata is NOT included in webhook event payloads
+  graphql_gap: >-
+    Metadata and Metadata Schema are absent from the GraphQL schema because
+    arbitrary JSON cannot be strongly typed.
+
+request_tracing:
+  header: x-amzn-RequestId
+  scope: present on every response, successful or not
+  guidance: include the request id when reporting a bug
+
+timestamps:
+  timezone: UTC only
+  format: ISO 8601
+  rule: >-
+    If a time component is supplied it must carry a time-zone designator.
+    Date-only fields reject a time component and never return one.
+  examples:
+    date_time: '2020-02-11T13:32:03.6759302Z'
+    date_only: '2020-02-11'
+
+methods:
+  GET: retrieve a resource or collection
+  POST: create a new resource
+  PATCH: partial update — send only the fields to change
+  DELETE: soft delete
+  put_not_used: true
+create_semantics:
+  status: 201 Created
+  body: empty — the created resource is NOT returned
+  location_header: the URL where the new resource can be retrieved
+  reason: resource creation is often asynchronous
+update_semantics:
+  status: 204 No Content
+  body: empty — re-fetch with GET to see the new state
+  content_type: application/json
+
+file_upload:
+  endpoints: [documents, propertyImages, identityChecks]
+  inline_limit_mb: 6
+  inline_limit_note: >-
+    6 MB is the TOTAL request size (headers + body), so the encoded file must be
+    somewhat smaller; multi-document endpoints such as POST /identityChecks
+    share the single 6 MB budget.
+  presigned:
+    endpoint: POST /<resource>/signedUrl
+    request: '{ "amount": 1-10 }'
+    max_urls: 10
+    expiry_minutes: 15
+    size_range_mb: 6-30
+    upload_method: PUT the binary body directly to the returned URL
+    finalize: >-
+      POST the resource with fileUrl set to the pre-signed URL (query string
+      omitted) instead of base64 fileData; the platform then transfers the file
+      into the customer's file system.
+
+error_envelope:
+  format: custom JSON (not RFC 9457 problem+json)
+  fields:
+    statusCode: integer HTTP status
+    dateTime: UTC timestamp the error was issued
+    description: human-readable message
+    errors: 'array of { field, message } — populated only for 422'
+  detail: errors/reapit-problem-types.yml
+
+rate_limits:
+  requests_per_second: 20
+  concurrent_requests_per_customer: 5
+  requests_per_day: 250000
+  throttled_status: 429
+  headers_published: false
+  headers_note: >-
+    Reapit publishes no RateLimit-* / X-RateLimit-* response headers, so a
+    client cannot see remaining budget — only the 429 after the fact.
+  detail: rate-limits/reapit-rate-limits.yml
+  docs: https://foundations-documentation.reapit.cloud/api/api-documentation#rate-limits
+
+identifiers:
+  global_uniqueness: false
+  rule: >-
+    Resource ids are unique only within one customer's database. Build a
+    composite key of customerId + resource id to get global uniqueness. This is
+    the single most common data-modelling mistake against Foundations.
+
+cross_references:
+  authentication: authentication/reapit-authentication.yml
+  scopes: scopes/reapit-scopes.yml
+  errors: errors/reapit-problem-types.yml
+  lifecycle: lifecycle/reapit-lifecycle.yml
+  rate_limits: rate-limits/reapit-rate-limits.yml
+  webhooks: asyncapi/reapit-foundations-webhooks.yml
+  sandbox: sandbox/reapit-sandbox.yml
+  graphql: graphql/reapit-foundations.graphql

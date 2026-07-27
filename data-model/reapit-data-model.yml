@@ -1,0 +1,543 @@
+generated: '2026-07-26'
+method: derived
+source: >-
+  graphql/reapit-foundations.graphql — derived from live anonymous introspection
+  of https://graphql.reapit.cloud/graphql on 2026-07-26 (190 types, 55 *Model
+  entity types), cross-read against
+  https://foundations-documentation.reapit.cloud/platform-glossary
+description: >-
+  The entity-relationship graph of the Reapit Foundations CRM, derived from the
+  GraphQL schema rather than an OpenAPI (the REST Swagger is bearer-gated). Two
+  structural facts shape everything. First, Contact is the spine: applicant,
+  vendor, landlord and tenant are ROLES a contact plays, wired through explicit
+  relationship join entities (ApplicantContactRelationshipModel,
+  LandlordRelationshipModel, VendorRelationshipModel, TenancyRelationships) that
+  can point at either a contact or a company via a polymorphic
+  associatedType/associatedId pair. Second, Property is the hub the transaction
+  hangs off: the sales lifecycle runs Property -> Offer -> Conveyancing (with
+  upward/downward chain links, the closest thing UK agency software has to an
+  MLS transaction record), and the lettings lifecycle runs Property -> Tenancy
+  -> TenancyCheck / RentReview / WorksOrder. Reapit's ids are per-customer, not
+  global — OXF18000001 is only meaningful inside one agency's database.
+identifiers:
+  global_uniqueness: false
+  composite_key: customerId + resource id
+  format: >-
+    Human-readable office-prefixed strings, e.g. contact OXF18000001, property
+    OXF190347, office OXF, negotiator JAS/NEG — the office code prefix is
+    conventional, not guaranteed.
+  concurrency_token: _eTag on every singular resource (see conventions/)
+common_fields:
+  id: resource identifier (unique per customer database)
+  created: ISO 8601 UTC creation timestamp
+  modified: ISO 8601 UTC last-modified timestamp
+  metadata: arbitrary JSON document attached by the calling app
+  _eTag: optimistic-concurrency token
+  _links: HAL link relations to related resources
+  _embedded: related resources pulled in via the embed parameter
+entities:
+- name: Contact
+  graphql_type: ContactModel
+  fields: 30
+  glossary: >-
+    Primary person record with associated roles such as Applicant, Vendor,
+    Tenancy or Landlord. Carries personal details and marketing/communication
+    preferences.
+  key_fields: [title, forename, surname, dateOfBirth, homePhone, mobilePhone, email,
+    marketingConsent, officeIds, negotiatorIds, primaryAddress, secondaryAddress, workAddress]
+  embeds: [documents, identityChecks, negotiators, offices, source]
+- name: Company
+  graphql_type: CompanyModel
+  fields: 18
+  glossary: >-
+    Business organisation the agent deals with — solicitor, supplier, etc. Typed
+    by role and able to participate in transactions.
+  key_fields: [name, typeIds, supplierTypeId, address, accreditations]
+  embeds: [companyTypes]
+- name: Applicant
+  graphql_type: ApplicantModel
+  fields: 39
+  glossary: Prospective buyer or renter with requirements, sources and notes.
+  key_fields: [departmentId, solicitorId, officeIds, negotiatorIds, buying, renting,
+    internalArea, externalArea, source, related]
+  embeds: [appointments, areas, department, documents, negotiators, offers, offices,
+    solicitor, source]
+- name: Property
+  graphql_type: PropertyModel
+  fields: 48
+  glossary: >-
+    The richest entity in the schema — descriptions, notes, marketing, utilities,
+    keys, certificates, developments and images (EPC, floorplans, maps).
+  key_fields: [alternateId, areaId, departmentId, negotiatorId, officeIds, address,
+    selling, letting, epc, internalArea, externalArea, rooms, keys]
+  embeds: [appointments, area, department, documents, landlord, negotiator, offers,
+    offices, images, tenancies, vendor]
+- name: Offer
+  graphql_type: OfferModel
+  fields: 18
+  glossary: A monetary amount proposed by an applicant on a sales property.
+  key_fields: [applicantId, propertyId, amount, date, status, inclusions, exclusions,
+    conditions]
+  embeds: [applicant, conveyancing, negotiator, property]
+- name: Conveyancing
+  graphql_type: ConveyancingModel
+  fields: 47
+  glossary: >-
+    Sales progression — turning an accepted offer into a completed sale, with
+    chain management as a sub-resource.
+  key_fields: [propertyId, vendorId, vendorSolicitorId, buyerId, buyerSolicitorId,
+    externalAgentId, upwardChainId, downwardChainId, mortgageLenderId, mortgageBrokerId,
+    mortgageSurveyorId, additionalSurveyorId]
+  embeds: [buyerSolicitor, offer, property, vendor, vendorSolicitor]
+  note: the UK chain, modelled explicitly as upward/downward links between conveyancing
+    records
+- name: Tenancy
+  graphql_type: TenancyModel
+  fields: 30
+  glossary: A lettings agreement between a landlord and one or more tenants on a property.
+  key_fields: [typeId, negotiatorId, propertyId, applicantId, related, source, daysInArrears,
+    meterReadings]
+  sub_resources: [tenancyChecks, rentReviews, extensions, noticeManagement, renewalNegotiations,
+    breakClauses, allowances, responsibilities]
+- name: Landlord
+  graphql_type: LandlordModel
+  fields: 12
+  glossary: A contact or company letting one or more properties.
+  key_fields: [solicitorId, officeId, related, source]
+  embeds: [appointments, documents, office, properties, solicitor, source]
+- name: Vendor
+  graphql_type: VendorModel
+  fields: 19
+  glossary: The selling side of a sales property.
+  key_fields: [typeId, sellingReasonId, solicitorId, propertyId, negotiatorId, officeIds,
+    related, source]
+- name: Appointment
+  graphql_type: AppointmentModel
+  fields: 28
+  glossary: Diary entry with type, attendees and inspection documents.
+  key_fields: [typeId, propertyId, organiserId, negotiatorIds, officeIds, start, end,
+    cancelled, attendee, followUp, recurrence]
+  embeds: [negotiators, offices, organiser, property, type]
+- name: Negotiator
+  graphql_type: NegotiatorModel
+  fields: 14
+  glossary: A CRM user / agency staff member.
+  key_fields: [name, jobTitle, officeId, workPhone, mobilePhone, email, active, additionalContactDetails,
+    diaryNegotiatorIds, diaryOfficeIds]
+- name: Office
+  graphql_type: OfficeModel
+  fields: 12
+  glossary: A branch of the agency.
+  key_fields: [name, manager, address, workPhone, email, active]
+- name: Department
+  graphql_type: DepartmentModel
+  fields: 13
+  glossary: A business line (sales, lettings) carrying the valid property attribute
+    option sets.
+- name: Area
+  graphql_type: AreaModel
+  fields: 12
+  glossary: Agent-defined geography, specified as coordinates or as a set of localities.
+  key_fields: [departmentIds, officeIds, area, type]
+- name: Source
+  graphql_type: SourceModel
+  fields: 10
+  glossary: Where an enquiry came from; attachable to applicants, landlords and vendors.
+- name: Enquiry
+  graphql_type: EnquiryModel
+  fields: 21
+  glossary: >-
+    Sales or lettings lead (Internet Registration in the CRM) awaiting negotiator
+    review before conversion.
+  key_fields: [officeId, propertyIds, enquiryType, status, negotiatorId, createdPropertyId,
+    address]
+- name: IdentityCheck
+  graphql_type: IdentityCheckModel
+  fields: 13
+  glossary: AML/KYC verification of a contact, with primary/secondary documents and
+    expiry dates.
+  key_fields: [contactId, negotiatorId, status, checkDate, identityDocument1, identityDocument2]
+- name: Document
+  graphql_type: DocumentModel
+  fields: 10
+  glossary: File asset metadata, typed by purpose and associated with an entity.
+  key_fields: [associatedType, associatedId, typeId, name]
+- name: PropertyImage
+  graphql_type: PropertyImageModel
+  fields: 11
+  key_fields: [propertyId, type, order, caption, url]
+- name: Key
+  graphql_type: KeyModel
+  fields: 9
+  glossary: A physical key set held against a property.
+  key_fields: [number, type, officeId, status, keysInSet]
+- name: KeyMovement
+  graphql_type: KeyMovementModel
+  fields: 9
+  glossary: Check-out / check-in of a key set to a contact or negotiator.
+- name: Task
+  graphql_type: TaskModel
+  fields: 19
+  key_fields: [typeId, senderId, recipientId, landlordId, propertyId, applicantId,
+    tenancyId, contactId, activates, completed]
+- name: JournalEntry
+  graphql_type: JournalEntryModel
+  fields: 9
+  glossary: Timestamped activity-feed event tied to one or more entities.
+  key_fields: [propertyId, associatedType, associatedId, typeId, negotiatorId, description]
+- name: WorksOrder
+  graphql_type: WorksOrderModel
+  glossary: Maintenance job raised against a property/tenancy, with line items.
+  key_fields: [status, raisedToChaseDays, propertyId, tenancyId, companyId, negotiatorId]
+- name: WorksOrderItem
+  graphql_type: WorksOrderItemModel
+  glossary: A line item on a works order.
+- name: TenancyCheck
+  graphql_type: TenancyCheckModel
+  fields: 10
+  key_fields: [tenancyId, type, status, description]
+- name: ListItem
+  graphql_type: ListItemModel
+  glossary: >-
+    The universal configuration lookup value (id + value) returned by
+    GetConfigurationsByType for appointmentTypes, companyTypes,
+    identityDocumentTypes, documentTypes, journalEntryTypes, followUpResponses,
+    sellingReasons, supplierTypes, taskTypes, tenancyTypes, vendorTypes,
+    worksOrderTypes and keyTypes.
+join_entities:
+- name: ApplicantContactRelationship
+  graphql_type: ApplicantContactRelationshipModel
+  from: Applicant
+  via: [applicantId, associatedType, associatedId]
+  to: Contact or Company
+  note: polymorphic — associatedType selects the target entity
+- name: LandlordRelationship
+  graphql_type: LandlordRelationshipModel
+  from: Landlord
+  via: [landlordId, associatedType, associatedId]
+  to: Contact or Company
+- name: VendorRelationship
+  from: Vendor
+  via: [vendorId, associatedType, associatedId]
+  to: Contact or Company
+- name: TenancyRelationship
+  from: Tenancy
+  via: [tenancyId, associatedType, associatedId]
+  to: Contact or Company
+- name: CompanyRole
+  graphql_type: CompanyRoleModel
+  from: Company
+  via: [companyId, associatedType, associatedId]
+  to: the entity the company acts for (e.g. solicitor on a conveyancing)
+relationships:
+- from: Contact
+  to: Office
+  type: has_many
+  via: officeIds
+- from: Contact
+  to: Negotiator
+  type: has_many
+  via: negotiatorIds
+- from: Contact
+  to: IdentityCheck
+  type: has_many
+  via: IdentityCheck.contactId
+- from: Contact
+  to: Document
+  type: has_many
+  via: Document.associatedId (associatedType=contact)
+- from: Applicant
+  to: Contact
+  type: has_many
+  via: ApplicantContactRelationship
+- from: Applicant
+  to: Department
+  type: belongs_to
+  via: departmentId
+- from: Applicant
+  to: Company
+  type: has_one
+  via: solicitorId
+- from: Applicant
+  to: Source
+  type: has_one
+  via: source
+- from: Applicant
+  to: Offer
+  type: has_many
+  via: Offer.applicantId
+- from: Applicant
+  to: Appointment
+  type: has_many
+  via: embed appointments
+- from: Property
+  to: Area
+  type: belongs_to
+  via: areaId
+- from: Property
+  to: Department
+  type: belongs_to
+  via: departmentId
+- from: Property
+  to: Negotiator
+  type: belongs_to
+  via: negotiatorId
+- from: Property
+  to: Office
+  type: has_many
+  via: officeIds
+- from: Property
+  to: PropertyImage
+  type: has_many
+  via: PropertyImage.propertyId
+- from: Property
+  to: Key
+  type: has_many
+  via: keys
+- from: Property
+  to: Vendor
+  type: has_one
+  via: Vendor.propertyId
+- from: Property
+  to: Landlord
+  type: has_one
+  via: embed landlord
+- from: Property
+  to: Offer
+  type: has_many
+  via: Offer.propertyId
+- from: Property
+  to: Tenancy
+  type: has_many
+  via: Tenancy.propertyId
+- from: Property
+  to: Appointment
+  type: has_many
+  via: Appointment.propertyId
+- from: Property
+  to: JournalEntry
+  type: has_many
+  via: JournalEntry.propertyId
+- from: Offer
+  to: Applicant
+  type: belongs_to
+  via: applicantId
+- from: Offer
+  to: Property
+  type: belongs_to
+  via: propertyId
+- from: Offer
+  to: Conveyancing
+  type: has_one
+  via: embed conveyancing
+- from: Conveyancing
+  to: Property
+  type: belongs_to
+  via: propertyId
+- from: Conveyancing
+  to: Vendor
+  type: belongs_to
+  via: vendorId
+- from: Conveyancing
+  to: Company
+  type: has_one
+  via: vendorSolicitorId
+- from: Conveyancing
+  to: Company
+  type: has_one
+  via: buyerSolicitorId
+- from: Conveyancing
+  to: Company
+  type: has_one
+  via: mortgageLenderId
+- from: Conveyancing
+  to: Company
+  type: has_one
+  via: mortgageBrokerId
+- from: Conveyancing
+  to: Company
+  type: has_one
+  via: mortgageSurveyorId
+- from: Conveyancing
+  to: Conveyancing
+  type: has_one
+  via: upwardChainId
+- from: Conveyancing
+  to: Conveyancing
+  type: has_one
+  via: downwardChainId
+- from: Tenancy
+  to: Property
+  type: belongs_to
+  via: propertyId
+- from: Tenancy
+  to: Applicant
+  type: belongs_to
+  via: applicantId
+- from: Tenancy
+  to: Negotiator
+  type: belongs_to
+  via: negotiatorId
+- from: Tenancy
+  to: Contact
+  type: has_many
+  via: TenancyRelationship
+- from: Tenancy
+  to: TenancyCheck
+  type: has_many
+  via: TenancyCheck.tenancyId
+- from: Landlord
+  to: Office
+  type: belongs_to
+  via: officeId
+- from: Landlord
+  to: Company
+  type: has_one
+  via: solicitorId
+- from: Landlord
+  to: Contact
+  type: has_many
+  via: LandlordRelationship
+- from: Landlord
+  to: Property
+  type: has_many
+  via: embed properties
+- from: Vendor
+  to: Property
+  type: belongs_to
+  via: propertyId
+- from: Vendor
+  to: Negotiator
+  type: belongs_to
+  via: negotiatorId
+- from: Vendor
+  to: Company
+  type: has_one
+  via: solicitorId
+- from: Vendor
+  to: Contact
+  type: has_many
+  via: VendorRelationship
+- from: Appointment
+  to: Property
+  type: belongs_to
+  via: propertyId
+- from: Appointment
+  to: Negotiator
+  type: has_many
+  via: negotiatorIds
+- from: Appointment
+  to: Negotiator
+  type: belongs_to
+  via: organiserId
+- from: Appointment
+  to: Office
+  type: has_many
+  via: officeIds
+- from: Appointment
+  to: ListItem
+  type: belongs_to
+  via: typeId
+- from: Negotiator
+  to: Office
+  type: belongs_to
+  via: officeId
+- from: Area
+  to: Department
+  type: has_many
+  via: departmentIds
+- from: Area
+  to: Office
+  type: has_many
+  via: officeIds
+- from: Key
+  to: Office
+  type: belongs_to
+  via: officeId
+- from: Key
+  to: KeyMovement
+  type: has_many
+  via: keyMovements
+- from: KeyMovement
+  to: Contact
+  type: has_one
+  via: checkOutToContact
+- from: KeyMovement
+  to: Negotiator
+  type: has_one
+  via: checkOutToNegotiator
+- from: Task
+  to: Property
+  type: belongs_to
+  via: propertyId
+- from: Task
+  to: Applicant
+  type: belongs_to
+  via: applicantId
+- from: Task
+  to: Tenancy
+  type: belongs_to
+  via: tenancyId
+- from: Task
+  to: Contact
+  type: belongs_to
+  via: contactId
+- from: Task
+  to: Landlord
+  type: belongs_to
+  via: landlordId
+- from: Task
+  to: Negotiator
+  type: belongs_to
+  via: senderId
+- from: Task
+  to: Negotiator
+  type: belongs_to
+  via: recipientId
+- from: Document
+  to: any
+  type: belongs_to
+  via: associatedType + associatedId
+- from: JournalEntry
+  to: any
+  type: belongs_to
+  via: associatedType + associatedId
+- from: IdentityCheck
+  to: Contact
+  type: belongs_to
+  via: contactId
+- from: IdentityCheck
+  to: Document
+  type: has_many
+  via: identityDocument1 / identityDocument2
+- from: Enquiry
+  to: Property
+  type: has_many
+  via: propertyIds
+- from: Enquiry
+  to: Office
+  type: belongs_to
+  via: officeId
+lifecycles:
+- name: Sales
+  chain: Enquiry -> Applicant -> Appointment (viewing/valuation) -> Offer -> Conveyancing
+      -> completion
+  status_events: [properties.selling.instructed, properties.selling.askingpricechanged,
+    properties.selling.underoffer, properties.selling.exchanged, properties.selling.completed,
+    properties.selling.withdrawn, properties.selling.lostinstruction]
+- name: Lettings
+  chain: Enquiry -> Applicant -> Appointment -> Tenancy -> TenancyCheck / RentReview
+      / WorksOrder
+  status_events: [tenancies.created, tenancies.modified, worksorders.raised, worksorders.complete,
+    worksorders.cancelled]
+- name: Compliance
+  chain: Contact -> IdentityCheck (AML/KYC) -> Document
+  status_events: [identitychecks.created, identitychecks.modified, contacts.optedout]
+not_in_graphql:
+  note: >-
+    Named as resource domains in the platform permissions glossary but absent
+    from the GraphQL schema — they exist only on the REST platform.
+  entities: [Certificate, Invoice, Referral, PropertyAlarmData, Transaction, TelephonyNotification,
+    Metadata, MetadataSchema]
+render: null
+render_note: no subway/ diagram exists for this repo yet

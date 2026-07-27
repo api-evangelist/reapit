@@ -19,12 +19,17 @@ description: >-
   through Reapit Connect with a live anonymous discovery document, a REST API
   covering roughly thirty CRM resource domains, a public GraphQL proxy, a real
   webhooks system with sixty-plus event topics, and an alpha Model Context
-  Protocol server. The honest caveat is the contract: the Swagger/OpenAPI
+  Protocol server. The contract is split rather than absent: the Swagger/OpenAPI
   document that powers the Interactive API Explorer is served from
-  platform.reapit.cloud/docs and requires a bearer token, so no machine-readable
-  spec could be harvested anonymously, and reaching any real agency's data
-  requires the app to pass Reapit's AppMarket listing review and then be
-  installed by that customer, who grants the scopes. There is no RESO Web API or
+  platform.reapit.cloud/docs behind a bearer token, so no REST spec is
+  harvestable anonymously — but full GraphQL introspection against
+  graphql.reapit.cloud succeeds without credentials and yields a real
+  machine-readable contract of 190 types, 63 queries and 58 mutations, which is
+  the widest public description of the platform that exists. The MCP server's
+  tools/list is auth-gated, so its 43 tools are known only from the docs.
+  Reaching any real agency's data still requires the app to pass Reapit's
+  AppMarket listing review and then be installed by that customer, who grants
+  the scopes. There is no RESO Web API or
   Data Dictionary certification, no OData $metadata document and no Universal
   Property Identifier anywhere in Reapit's stack — RESO is a North American,
   NAR-driven construct and the UK has no MLS to certify against. Reapit publishes
@@ -45,7 +50,7 @@ accessModel:
   - developer-terms-and-conditions
   generated: '2026-07-26'
   method: manual
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/groq.png
+image: https://cdn.prod.website-files.com/65cc1dfdc4913d1034befe43/65f4ec800a019f1d78665d75_webclip-reapit.png
 tags:
 - Real Estate
 - United Kingdom
@@ -117,6 +122,14 @@ apis:
     url: https://developers.reapit.cloud/register
   - type: LLMsTxt
     url: https://foundations-documentation.reapit.cloud/llms.txt
+  - type: Conventions
+    url: conventions/reapit-conventions.yml
+  - type: ErrorCatalog
+    url: errors/reapit-problem-types.yml
+  - type: RateLimits
+    url: rate-limits/reapit-rate-limits.yml
+  - type: DataModel
+    url: data-model/reapit-data-model.yml
 - aid: reapit:reapit-foundations-graphql-api
   name: Reapit Foundations GraphQL API
   description: >-
@@ -145,6 +158,10 @@ apis:
     url: https://foundations-documentation.reapit.cloud/api/reapit-connect
   - type: IssueTracker
     url: https://github.com/reapit/foundations/issues
+  - type: GraphQL
+    url: graphql/reapit-foundations.graphql
+  - type: DataModel
+    url: data-model/reapit-data-model.yml
 - aid: reapit:reapit-foundations-webhooks
   name: Reapit Foundations Webhooks
   description: >-
@@ -179,6 +196,8 @@ apis:
     url: https://developers.reapit.cloud/webhooks/manage
   - type: Security
     url: https://foundations-documentation.reapit.cloud/api/webhooks#webhook-source-ip-addresses-allowlisting
+  - type: Webhooks
+    url: asyncapi/reapit-foundations-webhooks.yml
 - aid: reapit:reapit-foundations-mcp-server
   name: Reapit Foundations MCP Server (Alpha)
   description: >-
@@ -205,6 +224,10 @@ apis:
   - type: Documentation
     url: https://foundations-documentation.reapit.cloud/api/mcp-alpha
   - type: MCPServer
+    url: mcp/reapit-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/reapit-tool-crosswalk.yml
+  - type: MCPEndpoint
     url: https://foundations-mcp.iaas.reapit.cloud/mcp
   - type: Authentication
     url: https://foundations-documentation.reapit.cloud/api/reapit-connect
@@ -233,6 +256,10 @@ apis:
     url: https://foundations-documentation.reapit.cloud/api/reapit-connect
   - type: OpenIDConnectDiscovery
     url: authentication/reapit-connect-openid-configuration.json
+  - type: WellKnown
+    url: well-known/reapit-well-known.yml
+  - type: OAuthScopes
+    url: scopes/reapit-scopes.yml
   - type: Authentication
     url: https://connect.reapit.cloud/.well-known/openid-configuration
   - type: SDK
@@ -280,6 +307,7 @@ apis:
     beta with known gaps such as desktop-added images and documents not appearing
     on the platform.
   humanURL: https://foundations-documentation.reapit.cloud/api/desktop-api
+  baseURL: agencycloud://
   tags:
   - Desktop
   - CRM
@@ -291,6 +319,54 @@ apis:
   - type: DeveloperEdition
     url: https://developers.reapit.cloud/desktop
 common:
+- type: DomainSecurity
+  url: security/reapit-domain-security.yml
+- type: WellKnown
+  url: well-known/reapit-well-known.yml
+- type: Authentication
+  url: authentication/reapit-authentication.yml
+- type: OAuthScopes
+  url: scopes/reapit-scopes.yml
+- type: Conventions
+  url: conventions/reapit-conventions.yml
+- type: Idempotency
+  url: conventions/reapit-conventions.yml
+- type: ErrorCatalog
+  url: errors/reapit-problem-types.yml
+- type: RateLimits
+  url: rate-limits/reapit-rate-limits.yml
+- type: Lifecycle
+  url: lifecycle/reapit-lifecycle.yml
+- type: Deprecation
+  url: https://foundations-documentation.reapit.cloud/api/api-documentation#deprecation
+- type: ChangeLog
+  url: changelog/reapit-changelog.yml
+- type: Packages
+  url: packages/reapit-packages.yml
+- type: SDKs
+  url: packages/reapit-packages.yml
+- type: CLI
+  url: cli/reapit-cli.yml
+- type: Components
+  url: components/reapit-components.yml
+- type: Sandbox
+  url: sandbox/reapit-sandbox.yml
+- type: DataModel
+  url: data-model/reapit-data-model.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Conformance
+  url: conformance/reapit-conformance.yml
+- type: Compliance
+  url: https://www.reapit.com/security
+- type: TrustCenter
+  url: security/reapit-trust-center.yml
+- type: GettingStarted
+  url: https://foundations-documentation.reapit.cloud/developer-portal
+- type: APIReference
+  url: https://developers.reapit.cloud/swagger
+- type: SLA
+  url: https://www.reapit.com/legal/terms-and-conditions/reapit-partner-business-service-catalogue
 - type: Website
   url: https://www.reapit.com/
 - type: Documentation

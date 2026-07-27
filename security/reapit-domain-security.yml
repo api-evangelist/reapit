@@ -1,0 +1,37 @@
+generated: '2026-07-26'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: www.reapit.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct 15 03:20:54 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+- host: foundations-documentation.reapit.cloud
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Sep  1 00:22:55 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+- host: platform.reapit.cloud
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Mar 19 23:59:59 2027 GMT
+  hsts: null
+domains:
+- domain: reapit.com
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: none
+- domain: reapit.cloud
+  dnssec: false
+  caa:
+  - 0 issue "pki.goog"
+  - 0 issue "amazon.com"
+  - 0 issue "digicert.com"
+  - 0 issue "letsencrypt.org"
+  spf: true
+  dmarc: false

@@ -1,0 +1,46 @@
+# Reapit Foundations
+
+## Reapit Foundations
+
+- [Home](https://foundations-documentation.reapit.cloud/readme.md): Welcome to Reapit Foundations Documentation
+- [APIs](https://foundations-documentation.reapit.cloud/api.md): A complete guide to working with Reapit Foundations Web and Server-Side APIs
+- [MCP (Alpha)](https://foundations-documentation.reapit.cloud/api/mcp-alpha.md): A guide for interacting with our Platform MCP
+- [REST API](https://foundations-documentation.reapit.cloud/api/api-documentation.md): Complete technical guidance on how to work with the Foundations REST APIs
+- [Webhooks](https://foundations-documentation.reapit.cloud/api/webhooks.md): Technical guidance for working with webhooks for real time event notifications
+- [GraphQL](https://foundations-documentation.reapit.cloud/api/graphql.md): GraphQL Implementation of the Foundations API
+- [Reapit Connect](https://foundations-documentation.reapit.cloud/api/reapit-connect.md): How to manage authentication of Reapit users with our hosted identity solution
+- [Desktop API](https://foundations-documentation.reapit.cloud/api/desktop-api.md): An API to interact between the Reapit AgencyCloud CRM and a AppMarket Web Application
+- [Notifications](https://foundations-documentation.reapit.cloud/api/notifications.md): Real time event delivery to Reapit products from your applications
+- [Developer Portal](https://foundations-documentation.reapit.cloud/developer-portal.md): A step-by-step guide to getting started in the developer portal
+- [Listing your App](https://foundations-documentation.reapit.cloud/listing-your-app.md)
+- [App Permissions](https://foundations-documentation.reapit.cloud/listing-your-app/app-permissions.md)
+- [App Listing Review](https://foundations-documentation.reapit.cloud/listing-your-app/app-listing-review.md)
+- [App Development](https://foundations-documentation.reapit.cloud/app-development.md): A guide to building web applications for the Reapit AppMarket
+- [Developer Guidelines](https://foundations-documentation.reapit.cloud/app-development/developer-guidelines.md): This guide is intended to provide basic guidelines on the delivery of projects for the Reapit Foundations Platform as a Service (PAAS).
+- [Usage Guidelines](https://foundations-documentation.reapit.cloud/app-development/usage-guidelines.md): Getting the most out of our Platform
+- [Elements](https://foundations-documentation.reapit.cloud/app-development/elements.md): Reapit Elements is a React component library for building digital experiences that feel native to our platform.
+- [Vite Template](https://foundations-documentation.reapit.cloud/app-development/vite-template.md): A Vite Template to get you immediately started with Reapit Foundations
+- [Create React App Template](https://foundations-documentation.reapit.cloud/app-development/create-react-app-template.md): A Create React App Template to get you immediately started with Reapit Foundations
+- [Connect Session](https://foundations-documentation.reapit.cloud/app-development/connect-session.md): An NPM package to simplify OAuth with Reapit Connect
+- [Foundations TS Defintions](https://foundations-documentation.reapit.cloud/app-development/foundations-ts-defintions.md): TypeScript definition files for the Reapit Foundations API
+- [Login With Reapit](https://foundations-documentation.reapit.cloud/app-development/web.md): A singular component to enable auth with reapit
+- [Contributing](https://foundations-documentation.reapit.cloud/app-development/contributing.md): A guide to how to work with Reapit open source packages
+- [Website Development](https://foundations-documentation.reapit.cloud/app-development/website-development.md): A guide to assist website developers when working with the Foundation API
+- [IaaS](https://foundations-documentation.reapit.cloud/app-development/iaas.md): Infrastructure As A Service platform
+- [Custom Domain](https://foundations-documentation.reapit.cloud/app-development/iaas/custom-domain.md): Custom domain configuration documentation.
+- [Developer Portal (Beta)](https://foundations-documentation.reapit.cloud/app-development/iaas/developer-portal-beta.md): Pipeline management within the Developer Portal
+- [CLI (Beta)](https://foundations-documentation.reapit.cloud/app-development/iaas/cli-beta.md): A Command Line Interface tool for interfacing with Reapit's IaaS platform
+- [What’s New](https://foundations-documentation.reapit.cloud/whats-new.md): We are constantly working to improve your experience with the Public APIs. Have a look to see what new features and fixes have been released.
+- [Platform Glossary](https://foundations-documentation.reapit.cloud/platform-glossary.md): This section provides further information on the concepts and terminology referenced by the Reapit Foundations Platform and the endpoints we provide
+- [Permissions ](https://foundations-documentation.reapit.cloud/platform-glossary/permissions.md): Please see the below list of permissions that 3rd parties can request to access - further broken down into 'Read' (ingest CRM information) and 'Write' (pushes new or amended data into CRM)
+- [Developer Terms and Conditions](https://foundations-documentation.reapit.cloud/developer-terms-and-conditions.md): These Terms and Conditions govern access to and of Reapit’s Foundations Platform.
+- [Troubleshooting](https://foundations-documentation.reapit.cloud/troubleshooting.md)
+- [Accessing Customer Data](https://foundations-documentation.reapit.cloud/troubleshooting/accessing-customer-data.md)
+- [Authentication Issues](https://foundations-documentation.reapit.cloud/troubleshooting/authentication-issues.md)
+- [Reapit Connect](https://foundations-documentation.reapit.cloud/troubleshooting/reapit-connect.md)
+- [REST API](https://foundations-documentation.reapit.cloud/troubleshooting/platform-api.md)
+- [Feature Requests](https://foundations-documentation.reapit.cloud/dev-requests.md)
+- [FAQ's](https://foundations-documentation.reapit.cloud/faqs.md)
+- [Reapit Connect Emails](https://foundations-documentation.reapit.cloud/faqs/reapit-connect-emails.md)
+- [Help](https://foundations-documentation.reapit.cloud/help.md)
+- [Reapit Connect Updates](https://foundations-documentation.reapit.cloud/reapit-connect-updates.md)

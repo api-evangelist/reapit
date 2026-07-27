@@ -1,0 +1,86 @@
+generated: '2026-07-26'
+method: searched
+source: live /.well-known/ probes against every Reapit host in apis.yml
+description: >-
+  The /.well-known/ discovery surface across the Reapit estate. Only Reapit
+  Connect (connect.reapit.cloud, an Auth0-backed tenant) publishes anything
+  anonymously — and it publishes the full OIDC + RFC 8414 pair plus JWKS. The
+  Foundations platform host (platform.reapit.cloud) answers every path with
+  401 Unauthorized because the whole host sits behind bearer auth, and the
+  Foundations MCP server answers with "No authorization header provided", so
+  even its RFC 9728 protected-resource metadata is gated. www.reapit.com
+  publishes no security.txt. Absence here is recorded data, not a gap in the
+  harvest.
+hosts:
+- host: https://connect.reapit.cloud
+  role: identity (Reapit Connect / OpenID Connect)
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    file: reapit-openid-configuration.json
+    standard: OpenID Connect Discovery 1.0
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: reapit-oauth-authorization-server.json
+    standard: RFC 8414
+  - path: /.well-known/jwks.json
+    status: 200
+    file: reapit-connect-jwks.json
+    standard: RFC 7517
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+- host: https://platform.reapit.cloud
+  role: Foundations REST platform
+  note: every path returns 401 Unauthorized; the host is entirely bearer-gated
+  documents:
+  - path: /.well-known/security.txt
+    status: 401
+  - path: /.well-known/openid-configuration
+    status: 401
+  - path: /.well-known/api-catalog
+    status: 401
+- host: https://foundations-mcp.iaas.reapit.cloud
+  role: Foundations MCP server (alpha)
+  note: >-
+    returns {"error":"No authorization header provided"} — the MCP OAuth
+    metadata documents are auth-gated, unusual for RFC 9728 which is normally
+    anonymous
+  documents:
+  - path: /.well-known/oauth-protected-resource
+    status: 401
+  - path: /.well-known/oauth-authorization-server
+    status: 401
+- host: https://www.reapit.com
+  role: corporate website
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+- host: https://developers.reapit.cloud
+  role: developer portal (SPA)
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    valid: false
+    note: >-
+      the portal is a single-page app that returns its HTML shell for every
+      path — this is NOT a real RFC 9116 security.txt and was not saved
+- host: https://foundations-documentation.reapit.cloud
+  role: documentation
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /llms.txt
+    status: 200
+    file: ../llms/reapit-llms.txt
+    standard: llms.txt
+security_txt:
+  published: false
+  note: >-
+    No RFC 9116 security.txt was found on any Reapit host. Security contact for
+    partners is partners@reapit.com and the Reapit Service Desk Portal
+    (https://reapitsupport.refined.site/); no public vulnerability disclosure
+    policy or bug bounty program was found.

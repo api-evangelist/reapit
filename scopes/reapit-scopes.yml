@@ -1,0 +1,173 @@
+generated: '2026-07-26'
+method: searched
+source: >-
+  https://foundations-documentation.reapit.cloud/api/webhooks (the topic table
+  publishes the literal scope string required for each event),
+  https://foundations-documentation.reapit.cloud/platform-glossary/permissions
+  (the human-readable permission domains),
+  https://foundations-documentation.reapit.cloud/api/mcp-alpha ,
+  https://foundations-documentation.reapit.cloud/api/notifications , and the
+  live Reapit Connect OIDC discovery document at
+  https://connect.reapit.cloud/.well-known/openid-configuration
+docs: https://foundations-documentation.reapit.cloud/platform-glossary/permissions
+description: >-
+  Reapit's permission model is two-layered and unusual. Reapit Connect is an
+  Auth0-backed OpenID Connect tenant whose discovery document advertises only
+  the standard OIDC profile scopes; the Foundations platform scopes are
+  application permissions selected at app registration in the developer portal
+  and then granted PER CUSTOMER at install time, so they never appear in the
+  anonymous discovery document. Reapit does not publish a single canonical scope
+  reference page — the permissions glossary lists the domains in prose, while
+  the webhook topic table is the one place that publishes literal scope strings.
+  The platform scopes below are therefore the ones Reapit states verbatim in the
+  documentation; the wider set follows the same
+  <resource>.read / <resource>.write shape but each unlisted write scope is
+  marked evidence: inferred rather than asserted as published.
+model:
+  granted_at: customer install time (AppMarket), not at token issuance
+  selected_at: app registration in the developer portal
+  change_process: >-
+    Adding a permission requires contacting the Reapit Partnerships team
+    (partners@reapit.com) with the business purpose, then creating an app
+    revision; EVERY customer who has installed the app must individually accept
+    the new permission by email before Reapit approves the revision.
+  revocation: uninstalling the app revokes all access to that customer's data
+  insufficient_scope: 403 Forbidden
+identity_scopes:
+  source: https://connect.reapit.cloud/.well-known/openid-configuration
+  supported:
+  - openid
+  - profile
+  - offline_access
+  - name
+  - given_name
+  - family_name
+  - nickname
+  - email
+  - email_verified
+  - picture
+  - created_at
+  - identities
+  - phone
+  - address
+platform_scopes:
+- scope: agencyCloud/mcp.access
+  description: >-
+    Required on the Reapit Connect JWT to call the Foundations MCP server. A
+    token without it is rejected with 403.
+  evidence: published — https://foundations-documentation.reapit.cloud/api/mcp-alpha
+- scope: applicants.read
+  description: Read applicants; required for applicants.created / applicants.modified webhooks.
+  evidence: published — webhook topic table
+- scope: appointments.read
+  description: >-
+    Read diary appointments; required for appointments.created / .modified /
+    .cancelled / .confirmed webhooks.
+  evidence: published — webhook topic table
+- scope: companies.read
+  description: Read companies; required for companies.created / companies.modified webhooks.
+  evidence: published — webhook topic table
+- scope: contacts.read
+  description: >-
+    Read contacts; required for contacts.created / .modified / .optedout /
+    .landlorddetails.updated webhooks.
+  evidence: published — webhook topic table
+- scope: conveyancing.read
+  description: Read conveyancing (sales progression); required for conveyancing.modified webhooks.
+  evidence: published — webhook topic table
+- scope: documents.read
+  description: Read documents; required for documents.created / documents.modified webhooks.
+  evidence: published — webhook topic table
+- scope: enquiries.read
+  description: >-
+    Read enquiries (internet registrations); required for enquiries.created /
+    .modified / .accepted / .rejected webhooks.
+  evidence: published — webhook topic table
+- scope: identitychecks.read
+  description: >-
+    Read AML/KYC identity checks; required for identitychecks.created /
+    identitychecks.modified webhooks.
+  evidence: published — webhook topic table
+- scope: landlords.read
+  description: Read landlords; required for landlords.created / landlords.modified webhooks.
+  evidence: published — webhook topic table
+- scope: negotiators.read
+  description: >-
+    Read negotiators. Required to call POST /notifications, because an app must
+    map its own users back to Reapit negotiator ids to target a notification.
+  evidence: published — https://foundations-documentation.reapit.cloud/api/notifications
+- scope: offers.read
+  description: >-
+    Read offers; required for offers.created / .modified / .accepted /
+    .rejected / .withdrawn webhooks.
+  evidence: published — webhook topic table
+- scope: offices.read
+  description: Read offices; required for offices.created / offices.modified webhooks.
+  evidence: published — webhook topic table
+- scope: properties.read
+  description: >-
+    Read properties and property images; required for properties.created /
+    .modified, all properties.selling.* topics, and propertyimages.* topics.
+  evidence: published — webhook topic table
+- scope: referrals.read
+  description: Read referrals; required for referrals.created / referrals.modified webhooks.
+  evidence: published — webhook topic table
+- scope: tenancies.read
+  description: Read tenancies; required for tenancies.created webhooks.
+  evidence: published — webhook topic table
+- scope: tenancies.write
+  description: >-
+    Write tenancies. Documented as the scope required for the
+    tenancies.modified webhook — the only .modified topic in the whole table
+    that demands a write scope rather than a read scope.
+  evidence: published — webhook topic table
+- scope: vendors.read
+  description: Read vendors; required for vendors.created / vendors.modified webhooks.
+  evidence: published — webhook topic table
+- scope: worksorders.read
+  description: >-
+    Read works orders; required for worksorders.raised / .modified / .complete /
+    .cancelled webhooks.
+  evidence: published — webhook topic table
+permission_domains:
+  source: https://foundations-documentation.reapit.cloud/platform-glossary/permissions
+  note: >-
+    The permissions glossary enumerates the data domains an app can request,
+    split by the docs into 'Read' (ingest CRM information) and 'Write' (push new
+    or amended data into the CRM). Literal scope strings are not printed for
+    every domain; the .read/.write suffix pattern is confirmed by the webhook
+    table for the domains listed above.
+  domains:
+  - applicants
+  - areas
+  - appointments
+  - certificates
+  - companies
+  - contacts
+  - conveyancing
+  - documents
+  - enquiries
+  - identity checks
+  - invoices
+  - journal entries
+  - keys
+  - landlords
+  - negotiators
+  - offers
+  - offices
+  - properties
+  - property alarm data
+  - referrals
+  - sources
+  - tasks
+  - telephony notifications
+  - tenancies
+  - transactions
+  - vendors
+  - works orders
+gaps:
+- No single canonical scope-reference page lists every literal scope string with
+  its description; the strings must be assembled from the webhook, MCP and
+  notifications pages.
+- The OIDC discovery document does not advertise any platform scope, so an agent
+  cannot discover the Foundations permission surface from the well-known endpoint.
