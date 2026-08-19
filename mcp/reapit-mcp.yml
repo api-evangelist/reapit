@@ -3,24 +3,20 @@ method: searched
 status: published
 maturity: alpha
 source: https://foundations-documentation.reapit.cloud/api/mcp-alpha
-description: >-
-  The Reapit Foundations MCP server is a real, hosted, first-party Model Context
-  Protocol server that exposes the agency CRM platform to agents over a single
-  Streamable HTTP endpoint. It is in alpha and behind an early-access form, and
-  an anonymous tools/list POST returns 401 {"error":"No authorization header
-  provided"} — so the tool names and domains below are the ones Reapit itself
-  publishes in the documentation, not a live introspection. Input schemas are
-  NOT published and require an authenticated tools/list call; see
-  reapit-tool-crosswalk.yml for how each tool binds to a real GraphQL operation
-  whose arguments are introspectable anonymously.
+description: The Reapit Foundations MCP server is a real, hosted, first-party Model Context Protocol server
+  that exposes the agency CRM platform to agents over a single Streamable HTTP endpoint. It is in alpha
+  and behind an early-access form, and an anonymous tools/list POST returns 401 {"error":"No authorization
+  header provided"} — so the tool names and domains below are the ones Reapit itself publishes in the
+  documentation, not a live introspection. Input schemas are NOT published and require an authenticated
+  tools/list call; see reapit-tool-crosswalk.yml for how each tool binds to a real GraphQL operation whose
+  arguments are introspectable anonymously.
 server:
   name: foundations
   transport: streamable-http
   url: https://foundations-mcp.iaas.reapit.cloud/mcp
   docs: https://foundations-documentation.reapit.cloud/api/mcp-alpha
   early_access: form
-  early_access_note: >-
-    Registration is by HubSpot form linked from the MCP alpha documentation page.
+  early_access_note: Registration is by HubSpot form linked from the MCP alpha documentation page.
 authentication:
   scheme: bearer
   issuer: https://connect.reapit.cloud/
@@ -30,9 +26,8 @@ authentication:
   tenant_header:
     name: reapit-customer
     required_for: machine-to-machine (client-credentials) clients only
-    note: >-
-      User-context tokens carry the customer code themselves, so the header is
-      not needed. Sandbox tenant id is SBOX.
+    note: User-context tokens carry the customer code themselves, so the header is not needed. Sandbox
+      tenant id is SBOX.
   optional_headers:
   - name: x-timezone
     default: UTC
@@ -48,10 +43,8 @@ live_probe:
     status: 401
   - path: /.well-known/oauth-authorization-server
     status: 401
-  note: >-
-    Unusually, even the RFC 9728 protected-resource metadata is auth-gated, so
-    an MCP client cannot discover the authorization server anonymously — it must
-    be told to use Reapit Connect out of band.
+  note: Unusually, even the RFC 9728 protected-resource metadata is auth-gated, so an MCP client cannot
+    discover the authorization server anonymously — it must be told to use Reapit Connect out of band.
 errors:
 - status: 400
   meaning: Bad request — e.g. a client-credentials token without the reapit-customer header.
@@ -62,14 +55,11 @@ errors:
 - status: 502
   meaning: Upstream verification failure (identity provider unreachable).
 behaviour:
-  embedded_resources: >-
-    The server applies Foundations "embeds" automatically — an appointment comes
-    back with its negotiators, office and property attached rather than just
-    their ids. Reapit documents this as convenient but subject to change, so
-    agents must not assume a fixed set of embedded fields.
-  stability: >-
-    Reapit states parameters, tools, resources, prompts and responses are likely
-    to change, and that List Tools is the authoritative current set per tenant.
+  embedded_resources: The server applies Foundations "embeds" automatically — an appointment comes back
+    with its negotiators, office and property attached rather than just their ids. Reapit documents this
+    as convenient but subject to change, so agents must not assume a fixed set of embedded fields.
+  stability: Reapit states parameters, tools, resources, prompts and responses are likely to change, and
+    that List Tools is the authoritative current set per tenant.
 client_config:
   mcpServers:
     foundations:
@@ -212,9 +202,14 @@ tools:
 related_mcp_servers:
 - name: Reapit Elements design system / component library MCP
   source: https://foundations-documentation.reapit.cloud/app-development/elements
-  note: >-
-    The Elements documentation states the Design System (design.reapit.cloud)
-    and component library (elements.reapit.cloud) docs are both available via
-    MCP for coding agents. Endpoint URLs are given in the Elements Getting
-    Started guide rather than the Foundations docs, so they are recorded here as
-    a pointer, not harvested.
+  note: The Elements documentation states the Design System (design.reapit.cloud) and component library
+    (elements.reapit.cloud) docs are both available via MCP for coding agents. Endpoint URLs are given
+    in the Elements Getting Started guide rather than the Foundations docs, so they are recorded here
+    as a pointer, not harvested.
+deployment:
+  mode: remote
+  endpoint: https://foundations-mcp.iaas.reapit.cloud/mcp
+  verified: probed
+  probe: wall
+  checked: '2026-08-12'
+  source: catalog MCP census
