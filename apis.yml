@@ -52,6 +52,17 @@ accessModel:
   method: manual
 image: https://cdn.prod.website-files.com/65cc1dfdc4913d1034befe43/65f4ec800a019f1d78665d75_webclip-reapit.png
 tags:
+- Real-Estate
+- United Kingdom
+- PropTech
+- CRM
+- Estate Agents
+- Property Listings
+- Property Management
+- Rentals
+- Conveyancing
+- Australia
+tags_raw:
 - Real Estate
 - United Kingdom
 - PropTech
@@ -88,6 +99,12 @@ apis:
   humanURL: https://foundations-documentation.reapit.cloud/api/api-documentation
   baseURL: https://platform.reapit.cloud
   tags:
+  - Real-Estate
+  - United Kingdom
+  - CRM
+  - Property Management
+  - Property Listings
+  tags_raw:
   - Real Estate
   - United Kingdom
   - CRM
@@ -148,6 +165,11 @@ apis:
   baseURL: https://graphql.reapit.cloud/graphql
   tags:
   - GraphQL
+  - Real-Estate
+  - United Kingdom
+  - CRM
+  tags_raw:
+  - GraphQL
   - Real Estate
   - United Kingdom
   - CRM
@@ -183,6 +205,11 @@ apis:
   humanURL: https://foundations-documentation.reapit.cloud/api/webhooks
   baseURL: https://platform.reapit.cloud
   tags:
+  - Webhook
+  - Event
+  - Real-Estate
+  - United Kingdom
+  tags_raw:
   - Webhooks
   - Events
   - Real Estate
@@ -216,6 +243,12 @@ apis:
   baseURL: https://foundations-mcp.iaas.reapit.cloud/mcp
   tags:
   - MCP
+  - Artificial Intelligence
+  - Agents
+  - Real-Estate
+  - United Kingdom
+  tags_raw:
+  - MCP
   - AI
   - Agents
   - Real Estate
@@ -247,6 +280,10 @@ apis:
   humanURL: https://foundations-documentation.reapit.cloud/api/reapit-connect
   baseURL: https://connect.reapit.cloud
   tags:
+  - Authentication
+  - OpenID Connect
+  - Identity
+  tags_raw:
   - Authentication
   - OpenID Connect
   - OAuth 2.0
@@ -283,6 +320,11 @@ apis:
   humanURL: https://foundations-documentation.reapit.cloud/api/notifications
   baseURL: https://platform.reapit.cloud
   tags:
+  - Notification
+  - Event
+  - Real-Estate
+  - United Kingdom
+  tags_raw:
   - Notifications
   - Events
   - Real Estate
@@ -309,6 +351,11 @@ apis:
   humanURL: https://foundations-documentation.reapit.cloud/api/desktop-api
   baseURL: agencycloud://
   tags:
+  - Desktop
+  - CRM
+  - Real-Estate
+  - United Kingdom
+  tags_raw:
   - Desktop
   - CRM
   - Real Estate
